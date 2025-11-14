@@ -1,0 +1,16 @@
+<table border="1">
+    <tr>
+        <td>Matricule</td>
+        <td>Type</td>
+        <td>Capacité</td>
+        <td>État</td>
+    </tr>
+    {% for i in vehicule %}
+        <tr>
+            <td>{{ i.matricule }}</td>
+            <td>{{ i.type }}</td>
+            <td>{{ i.capacite }}</td>
+            <td>{{ i.etat }}</td>
+        </tr>
+    {% endfor %}
+</table>
