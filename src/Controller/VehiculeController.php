@@ -47,4 +47,28 @@ final class VehiculeController extends AbstractController
             'formVehicule' => $for->createView()
         ]);
     }
+
+    #[Route('/updatevehicule/{id}', name: 'app_vehicule_update')]
+    public function updateVehicule(Request $request, ManagerRegistry $doctrine, $id)
+    {
+        $vehicule = $doctrine->getRepository(Vehicule::class)->find($id);
+        $for =$this->createform(VehiculeType::class, $vehicule);
+        $for->handleRequest($request);
+        if ($for->isSubmitted() && $for->isValid()) {
+            $em=$doctrine->getManager();
+            $em->persist($vehicule);
+            $em->flush();
+            return $this->redirectToRoute('liste_vehicule');
+        }
+        return $this->render('vehicule/update_vehicule.html.twig', ["formvehicule"=>$for->createView()]);
+    }
+    #[Route('/deletevehicule/{id}', name: 'app_vehicule_delete')]
+public function deleteVehicule(ManagerRegistry $doctrine, $id,VehiculeRepository $rep)
+    {
+        $vehicule = $rep->find($id);
+        $em=$doctrine->getManager();
+        $em->remove($vehicule);
+        $em->flush();
+        return $this->redirectToRoute('liste_vehicule');
+    }
 }

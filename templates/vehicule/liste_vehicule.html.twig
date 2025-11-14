@@ -1,16 +1,29 @@
 <table border="1">
+    <thead>
     <tr>
-        <td>Matricule</td>
-        <td>Type</td>
-        <td>Capacité</td>
-        <td>État</td>
+        <th>Matricule</th>
+        <th>Type</th>
+        <th>Capacité</th>
+        <th>État</th>
+        <th>Action</th>
     </tr>
+    </thead>
+    <tbody>
     {% for i in vehicule %}
         <tr>
             <td>{{ i.matricule }}</td>
             <td>{{ i.type }}</td>
             <td>{{ i.capacite }}</td>
             <td>{{ i.etat }}</td>
+            <td>
+                <a href="{{ path('app_vehicule_add') }}">Ajouter</a> |
+                <a href="{{ path('app_vehicule_update', {'id': i.id}) }}">Modifier</a> |
+                <a href="{{ path('app_vehicule_delete', {'id': i.id}) }}"
+                   onclick="return confirm('Voulez-vous vraiment supprimer ce véhicule ?');">
+                    Supprimer
+                </a>
+            </td>
         </tr>
     {% endfor %}
+    </tbody>
 </table>
