@@ -108,7 +108,6 @@ class Vehicule
     public function removeTrajet(Trajet $trajet): static
     {
         if ($this->trajet->removeElement($trajet)) {
-            // set the owning side to null (unless already changed)
             if ($trajet->getVehicule() === $this) {
                 $trajet->setVehicule(null);
             }

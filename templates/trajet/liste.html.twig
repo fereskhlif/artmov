@@ -1,4 +1,4 @@
-<table border="1">
+<table class="table" border="1">
     <thead>
     <tr>
         <th>Date de Depart</th>
@@ -17,7 +17,9 @@
             <td>{{ i.villeArr }}</td>
             <td>
                 <a href="{{ path('app_trajet_add') }}">Ajouter</a> |
-                {# Exemple pour Modifier/Supprimer si tu as les routes #}
+                <a href="{{ path('app_trajet_update', { id: i.id }) }}">Modifier</a>
+                <a href="{{ path('app_trajet_delete', { id: i.id }) }}" >Supprimer</a>
+
             </td>
         </tr>
     {% endfor %}

@@ -28,6 +28,11 @@ class Trajet
     private ?Vehicule $vehicule = null;
 
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
     public function getDateDep(): ?\DateTimeInterface
     {
         return $this->date_dep;

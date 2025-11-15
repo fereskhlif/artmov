@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Form\TrajetType;
 
 use App\Entity\Trajet;
+use App\Repository\TrajetRepository;
 use App\Repository\TransportRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,9 +23,9 @@ final class TrajetController extends AbstractController
         ]);
     }
     #[Route('/listetrajet', name: 'liste_trajet')]
-    public function listeTrajet(TransportRepository $transportRepository)
+    public function listeTrajet(TrajetRepository $repository )
     {
-        $trajet=$transportRepository->findAll();
+        $trajet=$repository->findAll();
         return $this->render('trajet/liste.html.twig', ["trajet"=>$trajet]);
     }
     #[Route('/addtrajet', name: 'app_trajet_add')]
@@ -37,9 +38,32 @@ public function addtrajet(Request $request,ManagerRegistry $doctrine)
             $em=$doctrine->getManager();
             $em->persist($trajet);
             $em->flush();
-            return $this->redirectToRoute('app_trajet_add');
+            return $this->redirectToRoute('liste_trajet');
         }
         return $this->render('trajet/addtrajet.html.twig', ["trajet"=>$for->createView()]);
     }
+    #[Route('/deletetrajet/{id}', name: 'app_trajet_delete')]
+public function deletetrajet(TrajetRepository $repository,int $id,ManagerRegistry $doctrine)
+    {
+        $trajet=$repository->find($id);
+        $em=$doctrine->getManager();
+        $em->remove($trajet);
+        $em->flush();
+        return $this->redirectToRoute('liste_trajet');
 
+    }
+    #[Route('/updatetrajet/{id}', name: 'app_trajet_update')]
+public function updatetrajet(TrajetRepository $repository,int $id,Request $request,ManagerRegistry $doctrine)
+    {
+        $trajet=$repository->find($id);
+        $for=$this->createForm(TrajetType::class,$trajet);
+        $for->handleRequest($request);
+        if($for->isSubmitted() && $for->isValid()){
+            $em=$doctrine->getManager();
+            $em->persist($trajet);
+            $em->flush();
+            return $this->redirectToRoute('liste_trajet');
+        }
+        return $this->render('trajet/updatetrajet.html.twig', ["trajet"=>$for->createView()]);
+    }
 }

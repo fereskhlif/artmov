@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Trajet;
 use App\Entity\Transport;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -9,11 +10,11 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Transport>
  */
-class TransportRepository extends ServiceEntityRepository
+class TrajetRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Transport::class);
+        parent::__construct($registry, Trajet::class);
     }
 
     //    /**
