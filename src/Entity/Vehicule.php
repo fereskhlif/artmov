@@ -28,14 +28,14 @@ class Vehicule
     private ?string $etat = null;
 
     /**
-     * @var Collection<int, Maintenance>
+     * @var Collection<int, Trajet>
      */
-    #[ORM\OneToMany(targetEntity: Maintenance::class, mappedBy: 'vehicule')]
-    private Collection $maintenance;
+    #[ORM\OneToMany(targetEntity: Trajet::class, mappedBy: 'vehicule')]
+    private Collection $trajet;
 
     public function __construct()
     {
-        $this->maintenance = new ArrayCollection();
+        $this->trajet = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -51,7 +51,6 @@ class Vehicule
     public function setMatricule(string $matricule): static
     {
         $this->matricule = $matricule;
-
         return $this;
     }
 
@@ -63,7 +62,6 @@ class Vehicule
     public function setType(string $type): static
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -75,7 +73,6 @@ class Vehicule
     public function setCapacite(int $capacite): static
     {
         $this->capacite = $capacite;
-
         return $this;
     }
 
@@ -87,34 +84,33 @@ class Vehicule
     public function setEtat(string $etat): static
     {
         $this->etat = $etat;
-
         return $this;
     }
 
     /**
-     * @return Collection<int, Maintenance>
+     * @return Collection<int, Trajet>
      */
-    public function getMaintenance(): Collection
+    public function getTrajet(): Collection
     {
-        return $this->maintenance;
+        return $this->trajet;
     }
 
-    public function addMaintenance(Maintenance $maintenance): static
+    public function addTrajet(Trajet $trajet): static
     {
-        if (!$this->maintenance->contains($maintenance)) {
-            $this->maintenance->add($maintenance);
-            $maintenance->setVehicule($this);
+        if (!$this->trajet->contains($trajet)) {
+            $this->trajet->add($trajet);
+            $trajet->setVehicule($this);
         }
 
         return $this;
     }
 
-    public function removeMaintenance(Maintenance $maintenance): static
+    public function removeTrajet(Trajet $trajet): static
     {
-        if ($this->maintenance->removeElement($maintenance)) {
+        if ($this->trajet->removeElement($trajet)) {
             // set the owning side to null (unless already changed)
-            if ($maintenance->getVehicule() === $this) {
-                $maintenance->setVehicule(null);
+            if ($trajet->getVehicule() === $this) {
+                $trajet->setVehicule(null);
             }
         }
 

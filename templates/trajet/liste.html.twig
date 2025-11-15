@@ -1,0 +1,25 @@
+<table border="1">
+    <thead>
+    <tr>
+        <th>Date de Depart</th>
+        <th>Date d'Arrivee</th>
+        <th>Ville de depart</th>
+        <th>Ville d'arrivee</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for i in trajet %}
+        <tr>
+            <td>{{ i.dateDep ? i.dateDep|date('Y-m-d H:i') : '' }}</td>
+            <td>{{ i.dateArr ? i.dateArr|date('Y-m-d H:i') : '' }}</td>
+            <td>{{ i.villeDep }}</td>
+            <td>{{ i.villeArr }}</td>
+            <td>
+                <a href="{{ path('app_trajet_add') }}">Ajouter</a> |
+                {# Exemple pour Modifier/Supprimer si tu as les routes #}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
