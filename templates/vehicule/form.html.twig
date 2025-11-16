@@ -1,0 +1,17 @@
+{# templates/vehicule/new.html.twig #}
+<h1>Ajouter un véhicule</h1>
+
+{{ form_start(form) }}
+    {{ form_row(form.matricule) }}
+    {{ form_row(form.type) }}
+    {{ form_row(form.capacite) }}
+    {{ form_row(form.etat) }}
+    {{ form_row(form.submit) }}
+{{ form_end(form) }}
+
+{# Bouton pour ajouter un trajet #}
+{% if vehicule is defined and vehicule.id %}
+    <a href="{{ path('app_trajet_new', {'vehiculeId': vehicule.id}) }}" class="btn btn-primary">
+        Ajouter un trajet
+    </a>
+{% endif %}

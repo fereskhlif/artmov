@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Form;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 use App\Entity\Vehicule;
 use Symfony\Component\Form\AbstractType;
@@ -17,7 +18,14 @@ class VehiculeType extends AbstractType
             ->add('type')
             ->add('capacite')
             ->add('etat')
+//            ->add('trajets', CollectionType::class, [
+//                'entry_type' => TrajetType::class,
+//                'allow_add' => true,
+//                'allow_delete' => true,
+//                'by_reference' => false,
+//            ])
             ->add('submit', SubmitType::class)
+
         ;
     }
 

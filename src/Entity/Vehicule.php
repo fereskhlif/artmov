@@ -31,11 +31,13 @@ class Vehicule
      * @var Collection<int, Trajet>
      */
     #[ORM\OneToMany(targetEntity: Trajet::class, mappedBy: 'vehicule')]
-    private Collection $trajet;
+    private Collection $trajets;
+
 
     public function __construct()
     {
-        $this->trajet = new ArrayCollection();
+        $this->trajets = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -90,24 +92,23 @@ class Vehicule
     /**
      * @return Collection<int, Trajet>
      */
-    public function getTrajet(): Collection
+    public function getTrajets(): Collection
     {
-        return $this->trajet;
+        return $this->trajets;
     }
 
     public function addTrajet(Trajet $trajet): static
     {
-        if (!$this->trajet->contains($trajet)) {
-            $this->trajet->add($trajet);
+        if (!$this->trajets->contains($trajet)) {
+            $this->trajets->add($trajet);
             $trajet->setVehicule($this);
         }
-
         return $this;
     }
 
     public function removeTrajet(Trajet $trajet): static
     {
-        if ($this->trajet->removeElement($trajet)) {
+        if ($this->trajets->removeElement($trajet)) {
             if ($trajet->getVehicule() === $this) {
                 $trajet->setVehicule(null);
             }

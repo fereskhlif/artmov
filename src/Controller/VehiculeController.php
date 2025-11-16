@@ -28,11 +28,14 @@ final class VehiculeController extends AbstractController
         return $this->render('vehicule/liste_vehicule.html.twig', ["vehicule" => $vehicule]);
     }
 
+
+
     #[Route('/addvehicule', name: 'app_vehicule_add')]
     public function addVehicule(Request $request, ManagerRegistry $doctrine)
     {
         $vehicule = new Vehicule();
         $for = $this->createForm(VehiculeType::class, $vehicule);
+
         $for->handleRequest($request);
 
         if ($for->isSubmitted() && $for->isValid()) {
@@ -44,14 +47,19 @@ final class VehiculeController extends AbstractController
         }
 
         return $this->render('vehicule/add_vehicule.html.twig', [
-            'formVehicule' => $for->createView()
+            'formVehicule' => $for->createView(),
+            'vehicule' => $vehicule,
         ]);
+
     }
 
     #[Route('/updatevehicule/{id}', name: 'app_vehicule_update')]
     public function updateVehicule(Request $request, ManagerRegistry $doctrine, $id)
     {
         $vehicule = $doctrine->getRepository(Vehicule::class)->find($id);
+        if (!$vehicule) {
+            throw $this->createNotFoundException('Véhicule introuvable');
+        }
         $for =$this->createform(VehiculeType::class, $vehicule);
         $for->handleRequest($request);
         if ($for->isSubmitted() && $for->isValid()) {
@@ -63,12 +71,27 @@ final class VehiculeController extends AbstractController
         return $this->render('vehicule/update_vehicule.html.twig', ["formvehicule"=>$for->createView()]);
     }
     #[Route('/deletevehicule/{id}', name: 'app_vehicule_delete')]
-public function deleteVehicule(ManagerRegistry $doctrine, $id,VehiculeRepository $rep)
+    public function deleteVehicule(ManagerRegistry $doctrine, $id, VehiculeRepository $rep)
     {
         $vehicule = $rep->find($id);
-        $em=$doctrine->getManager();
+
+        if (!$vehicule) {
+            throw $this->createNotFoundException('Vehicule non trouvé.');
+        }
+
+        // Vérification si le véhicule est lié à des trajets
+        if (count($vehicule->getTrajets()) > 0)
+
+        {
+            $this->addFlash('error', 'Impossible de supprimer ce véhicule : il est lié à un ou plusieurs trajets.');
+            return $this->redirectToRoute('liste_vehicule');
+        }
+
+        $em = $doctrine->getManager();
         $em->remove($vehicule);
         $em->flush();
+
         return $this->redirectToRoute('liste_vehicule');
     }
+
 }

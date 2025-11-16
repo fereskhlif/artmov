@@ -1,1 +1,15 @@
-{{form(formVehicule)}}
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Trajet{% endblock %}
+
+{% block body %}
+    <h1>Ajouter des trajets</h1>
+
+    {{ form_start(formVehicule) }}
+    {{ form_widget(formVehicule) }}
+
+
+
+    {{ form_end(formVehicule) }}
+
+{% endblock %}
