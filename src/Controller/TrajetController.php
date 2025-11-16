@@ -22,6 +22,20 @@ final class TrajetController extends AbstractController
             'controller_name' => 'TrajetController',
         ]);
     }
+
+    #[Route('/contact.html', name: 'contact')]
+
+    public function contact(): Response
+    {
+        return $this->render('trajet/contact.html.twig', []);
+
+
+    }
+    #[Route('/about-us', name: 'app_about_us')]
+    public function aboutUs(): Response
+    {
+        return $this->render('trajet/about.html.twig', []);
+    }
     #[Route('/listetrajet', name: 'liste_trajet')]
     public function listeTrajet(TrajetRepository $repository )
     {
