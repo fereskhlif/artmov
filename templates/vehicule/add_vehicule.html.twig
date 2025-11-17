@@ -1,15 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Add Trajet{% endblock %}
+{% block title %}Ajouter un Trajet{% endblock %}
 
 {% block body %}
-    <h1>Ajouter des trajets</h1>
+    <h1 class="text-center mb-4">Ajouter un trajet</h1>
 
-    {{ form_start(formVehicule) }}
-    {{ form_widget(formVehicule) }}
+    <div class="container mt-4">
+        <div class="card shadow p-4" style="border-radius: 12px;">
+            <div class="card-body">
 
+                {{ form_start(formVehicule, {'attr': {'class': 'row g-4'}}) }}
 
+                {% for child in formVehicule %}
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(child, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(child, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                    </div>
+                {% endfor %}
 
-    {{ form_end(formVehicule) }}
+                <div class="col-12 text-end mt-3">
+                    <button class="btn btn-primary btn-lg px-4">
+                        Enregistrer
+                    </button>
+                </div>
+
+                {{ form_end(formVehicule) }}
+
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

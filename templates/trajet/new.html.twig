@@ -3,19 +3,61 @@
 {% block title %}Ajouter un trajet{% endblock %}
 
 {% block body %}
-    <h1>Ajouter un nouveau trajet</h1>
+    <h1 class="text-center mb-4">Ajouter un nouveau trajet</h1>
 
-    {{ form_start(form) }}
+    <div class="container mt-4">
+        <div class="card shadow p-4" style="border-radius: 12px;">
+            <div class="card-body">
 
-    {{ form_row(form.date_dep) }}
-    {{ form_row(form.date_arr) }}
-    {{ form_row(form.ville_dep) }}
-    {{ form_row(form.ville_arr) }}
-    {{ form_row(form.vehicule) }}
+                {{ form_start(form, {'attr': {'class': 'row g-4'}}) }}
 
-{#    <button class="btn btn-primary">Enregistrer</button>#}
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        {{ form_label(form.date_dep, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.date_dep, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
 
-    {{ form_end(form) }}
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        {{ form_label(form.date_arr, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.date_arr, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
 
-    <a href="{{ path('liste_trajet') }}">Retour à la liste des trajets</a>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        {{ form_label(form.ville_dep, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.ville_dep, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        {{ form_label(form.ville_arr, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.ville_arr, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-group mb-3">
+                        {{ form_label(form.vehicule, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.vehicule, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+
+
+
+                {{ form_end(form) }}
+
+                <div class="mt-3">
+                    <a href="{{ path('liste_trajet') }}" class="text-decoration-none">
+                        ← Retour à la liste des trajets
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

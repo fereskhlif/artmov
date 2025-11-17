@@ -74,7 +74,7 @@ public function addtrajet(Request $request,ManagerRegistry $doctrine)
             $em = $doctrine->getManager();
             $em->persist($trajet);
             $em->flush();
-            return $this->redirectToRoute('liste_vehicule'); // ou liste_trajet
+            return $this->redirectToRoute('liste_vehicule');
         }
 
         return $this->render('trajet/new.html.twig', [
