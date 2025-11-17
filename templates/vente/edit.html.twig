@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la vente{% endblock %}
+
+{% block body %}
+<h1>Modifier la vente #{{ vente.idVente }}</h1>
+
+{{ form_start(form) }}
+    {{ form_row(form.Date_vente) }}
+    {{ form_row(form.montant) }}
+    <button class="btn">Enregistrer les modifications</button>
+{{ form_end(form) }}
+
+<a href="{{ path('app_ventes') }}">Retour à la liste des ventes</a>
+<a href="{{ path('app_ventes_show', {'id': vente.idVente}) }}">Voir les détails</a>
+{% endblock %}

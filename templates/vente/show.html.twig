@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la vente{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+  <h1>Détails de la vente #{{ vente.idVente }}</h1>
+
+  <ul class="list-group mb-3">
+    <li class="list-group-item"><strong>Date:</strong> {{ vente.dateVente ? vente.dateVente|date('d/m/Y H:i') : '—' }}</li>
+    <li class="list-group-item"><strong>Montant:</strong> {{ vente.montant }} DT</li>
+  </ul>
+
+  <div class="d-flex gap-2">
+    <a class="btn btn-secondary" href="{{ path('app_ventes') }}">Retour à la liste</a>
+    <a class="btn btn-warning" href="{{ path('app_ventes_edit', {'id': vente.idVente}) }}">Modifier</a>
+    <form method="post" action="{{ path('app_ventes_delete', {'id': vente.idVente}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette vente ?');">
+      <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ vente.idVente) }}">
+      <button class="btn btn-danger" type="submit">Supprimer</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

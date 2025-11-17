@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des ventes{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+  <h1>Liste des ventes</h1>
+
+  <div class="mb-3">
+    <a class="btn btn-primary" href="{{ path('app_ventes_new') }}">Ajouter une vente</a>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Date</th>
+        <th>Montant</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for vente in ventes %}
+      <tr>
+        <td>{{ vente.idVente }}</td>
+        <td>{{ vente.dateVente ? vente.dateVente|date('d/m/Y H:i') : '' }}</td>
+        <td>{{ vente.montant }} DT</td>
+        <td>
+          <a class="btn btn-sm btn-info" href="{{ path('app_ventes_show', {'id': vente.idVente}) }}">Voir</a>
+          <a class="btn btn-sm btn-warning" href="{{ path('app_ventes_edit', {'id': vente.idVente}) }}">Modifier</a>
+          <form method="post" action="{{ path('app_ventes_delete', {'id': vente.idVente}) }}" style="display:inline" onsubmit="return confirm('Voulez-vous vraiment supprimer cette vente ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ vente.idVente) }}">
+            <button class="btn btn-sm btn-danger" type="submit">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="4" class="text-center">Aucune vente.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

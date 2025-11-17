@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle vente{% endblock %}
+
+{% block body %}
+<h1>Ajouter une nouvelle vente</h1>
+
+{{ form_start(form) }}
+
+    {{ form_row(form.Date_vente) }}
+    {{ form_row(form.montant) }}
+
+    <button class="btn">Enregistrer</button>
+
+{{ form_end(form) }}
+
+<a href="{{ path('app_ventes') }}">Retour à la liste des ventes</a>
+{% endblock %}
