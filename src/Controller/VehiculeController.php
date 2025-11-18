@@ -27,6 +27,11 @@ final class VehiculeController extends AbstractController
         $vehicule = $vehiculeRepository->findAll();
         return $this->render('vehicule/liste_vehicule.html.twig', ["vehicule" => $vehicule]);
     }
+    #[Route('/dashboard', name: 'app_dashboard')]
+    public function dashboard(): Response
+    {
+        return $this->render('backend/index2.html.twig');
+    }
     #[Route('/addvehicule', name: 'app_vehicule_add')]
     public function addVehicule(Request $request, ManagerRegistry $doctrine)
     {
