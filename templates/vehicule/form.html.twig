@@ -9,7 +9,6 @@
     {{ form_row(form.submit) }}
 {{ form_end(form) }}
 
-{# Bouton pour ajouter un trajet #}
 {% if vehicule is defined and vehicule.id %}
     <a href="{{ path('app_trajet_new', {'vehiculeId': vehicule.id}) }}" class="btn btn-primary">
         Ajouter un trajet
