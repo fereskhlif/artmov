@@ -1,7 +1,11 @@
-{% extends 'base.html.twig' %}
+{% extends 'Template.html.twig' %}
 {% block title %}Liste des véhicules{% endblock %}
-
-{% block body %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('liste_vehicule') }}">liste des Véhicules</a></li>
+{#    <li class="breadcrumb-item active">liste des Véhicules</li>#}
+{% endblock %}
+{% block content %}
     <h1>Liste des Vehicules</h1>
     <table class="table">
         <thead>
