@@ -33,6 +33,9 @@ class Vehicule
     #[ORM\OneToMany(targetEntity: Trajet::class, mappedBy: 'vehicule', cascade: ["remove"], orphanRemoval: true)]
     private Collection $trajets;
 
+//    #[ORM\Column]
+//    private ?int $nb_places = null;
+
 
 
     public function __construct()
@@ -117,4 +120,16 @@ class Vehicule
 
         return $this;
     }
+
+//    public function getNbPlaces(): ?int
+//    {
+//        return $this->nb_places;
+//    }
+
+//    public function setNbPlaces(int $nb_places): static
+//    {
+//        $this->nb_places = $nb_places;
+//
+//        return $this;
+//    }
 }

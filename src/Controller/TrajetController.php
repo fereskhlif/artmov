@@ -57,32 +57,38 @@ public function addtrajet(Request $request,ManagerRegistry $doctrine)
         }
         return $this->render('trajet/addtrajet.html.twig', ["trajet"=>$for->createView()]);
     }
-    #[Route('/trajet/new/{vehiculeId?}', name: 'app_trajet_new')]
-    public function new(Request $request, ManagerRegistry $doctrine, ?int $vehiculeId = null)
+    #[Route('/trajet/new', name: 'trajet_new')]
+    public function neww(Request $request, ManagerRegistry $doctrine, TrajetRepository $trajetRepository): Response
     {
         $trajet = new Trajet();
-
-        if ($vehiculeId) {
-            $vehicule = $doctrine->getRepository(Vehicule::class)->find($vehiculeId);
-            $trajet->setVehicule($vehicule);
-        }
-
         $form = $this->createForm(TrajetType::class, $trajet);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $trajets = $trajetRepository->createQueryBuilder('t')
+                ->where('t.nbPlaces > 0')
+                ->getQuery()
+                ->getResult();
+
+            $vehicule = $trajet->getVehicule();
+            if ($vehicule) {
+                $trajet->setNbPlaces($vehicule->getCapacite());
+            }
+
             $em = $doctrine->getManager();
             $em->persist($trajet);
             $em->flush();
-//            return $this->redirectToRoute('liste_vehicule');
-            return $this->redirectToRoute('liste_trajet');
 
+            $this->addFlash('success', 'Trajet ajouté avec succès !');
+            return $this->redirectToRoute('liste_trajet');
         }
 
         return $this->render('trajet/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
+
 
     #[Route('/deletetrajet/{id}', name: 'app_trajet_delete')]
 public function deletetrajet(TrajetRepository $repository,int $id,ManagerRegistry $doctrine)
@@ -108,4 +114,74 @@ public function updatetrajet(TrajetRepository $repository,int $id,Request $reque
         }
         return $this->render('trajet/updatetrajet.html.twig', ["trajet"=>$for->createView()]);
     }
+    #[Route('/trajet/new', name: 'trajet_new')]
+    public function new(Request $request, EntityManagerInterface $em): Response
+    {
+        $trajet = new Trajet();
+
+        $form = $this->createForm(TrajetType::class, $trajet);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // Initialiser nb_places avec la capacité du véhicule choisi
+            if ($trajet->getVehicule()) {
+                $trajet->setNbPlaces($trajet->getVehicule()->getCapacite());
+            }
+
+            $em->persist($trajet);
+            $em->flush();
+
+            $this->addFlash('success', 'Trajet ajouté avec succès !');
+
+            return $this->redirectToRoute('liste_trajet');
+        }
+
+        return $this->render('trajet/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/trajets', name: 'frontoffice_trajets')]
+    public function trajets(TrajetRepository $trajetRepository): Response
+    {
+        $trajets = $trajetRepository->findBy(['statut' => 'Disponible']); // seuls les trajets programmés
+        return $this->render('trajet/trajets.html.twig', [
+            'trajets' => $trajets
+        ]);
+    }
+
+
+    #[Route('/trajet/reserver/{id}', name: 'trajet_reserver')]
+    public function reserver(Trajet $trajet, ManagerRegistry $doctrine): Response
+    {
+        // Vérifier si le trajet n'est pas déjà complet
+        if ($trajet->getStatut() === 'Complet') {
+            $this->addFlash('error', 'Ce trajet est complet.');
+            return $this->redirectToRoute('frontoffice_trajets');
+        }
+
+        // Vérifier s'il reste des places
+        if ($trajet->getNbPlaces() > 0) {
+            // Décrémenter le nombre de places
+            $trajet->setNbPlaces($trajet->getNbPlaces() - 1);
+
+            // Mettre à jour le statut si nécessaire
+            if ($trajet->getNbPlaces() === 0) {
+                $trajet->setStatut('Complet');
+            }
+
+            // Persister les changements
+            $em = $doctrine->getManager();
+            $em->persist($trajet);
+            $em->flush();
+
+            $this->addFlash('success', 'Réservation effectuée avec succès ! Il reste ' . $trajet->getNbPlaces() . ' place(s).');
+        } else {
+            $this->addFlash('error', 'Aucune place disponible pour ce trajet.');
+        }
+
+        return $this->redirectToRoute('frontoffice_trajets');
+    }
+
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Form;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -70,6 +71,15 @@ class TrajetType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'placeholder' => 'Sélectionnez un véhicule'
+            ])
+            ->add('nb_places', IntegerType::class, [
+                'label' => 'Nombre de places',
+                'row_attr' => ['class' => 'col-md-6 mb-3'],
+                'attr' => [
+                    'class' => 'form-control',
+                    'min' => 1
+                ],
+                'empty_data' => 0,
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Ajouter le trajet',
