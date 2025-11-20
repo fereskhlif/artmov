@@ -1,0 +1,56 @@
+{% extends 'Template.html.twig' %}
+
+{% block title %}Ticket Index{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="mb-4 text-center">Ticket Index</h1>
+
+        <!-- Event Tickets Button (Admin only) -->
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_event_index') }}" class="btn btn-success mb-3">
+                <i class="fas fa-arrow-left"></i> Back to Events
+            </a>
+        {% endif %}
+
+        <!-- Ticket Table -->
+        <table class="table table-striped table-bordered" style="border-radius: 10px; overflow: hidden;">
+            <thead class="thead-dark" style="background-color: #343a40; color: white;">
+                <tr>
+                    <th style="text-align: center;">#</th>
+                    <th style="text-align: center;">Quantity</th>
+                    <th style="text-align: center;">Price</th>
+                    <th style="text-align: center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                    <tr style="text-align: center;">
+                        <td>{{ ticket.id }}</td>
+                        <td>{{ ticket.quantity }}</td>
+                        <td>{{ ticket.prixtot }} €</td>
+                        <td>
+
+                            <!-- Edit Ticket Button -->
+                            <a href="{{ path('app_ticket_edit', {'id': ticket.id}) }}" class="btn btn-warning btn-sm" style="margin-right: 5px; padding: 5px 10px;">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+
+                            <!-- Delete Ticket Button with Confirmation -->
+                            <form action="{{ path('app_ticket_delete', {'id': ticket.id}) }}" method="post" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete this ticket?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ticket.id) }}">
+                                <button type="submit" class="btn btn-danger btn-sm" style="padding: 5px 10px;">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center">No records found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

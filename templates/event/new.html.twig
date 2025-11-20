@@ -1,0 +1,50 @@
+{% extends 'Template.html.twig' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>Create New Event</h1>
+
+        <!-- Form Start -->
+        {{ form_start(form, {'attr': {'class': 'event-form'}}) }}
+
+        <!-- Event Title Field -->
+        <div class="form-group">
+            {{ form_label(form.titre) }}
+            {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.titre) }}
+        </div>
+
+        <!-- Event Price Field -->
+        <div class="form-group">
+            {{ form_label(form.prix) }}
+            {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.prix) }}
+        </div>
+
+        <!-- Event Location Field -->
+        <div class="form-group">
+            {{ form_label(form.lieu) }}
+            {{ form_widget(form.lieu, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.lieu) }}
+        </div>
+
+        <!-- Event Image Field -->
+        <div class="form-group">
+            {{ form_label(form.image, 'Event Image') }}
+            {{ form_widget(form.image, {'attr': {'class': 'form-control', 'accept': 'image/*'}}) }}
+            {{ form_errors(form.image) }}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+                {{ button_label|default('Save') }}
+            </button>
+        </div>
+
+        <!-- Form End -->
+        {{ form_end(form) }}
+
+        <a href="{{ path('app_event_index') }}" class="btn btn-secondary mt-3">Back to List</a>
+    </div>
+{% endblock %}
