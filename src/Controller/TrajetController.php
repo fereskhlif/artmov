@@ -3,6 +3,7 @@
 namespace App\Controller;
 use App\Form\TrajetType;
 use App\Entity\Vehicule;
+use Doctrine\ORM\EntityManagerInterface;
 
 use App\Entity\Trajet;
 use App\Repository\TrajetRepository;
@@ -67,7 +68,7 @@ public function addtrajet(Request $request,ManagerRegistry $doctrine)
         if ($form->isSubmitted() && $form->isValid()) {
 
             $trajets = $trajetRepository->createQueryBuilder('t')
-                ->where('t.nbPlaces > 0')
+                ->where('t.nb_places > 0')
                 ->getQuery()
                 ->getResult();
 
@@ -114,33 +115,33 @@ public function updatetrajet(TrajetRepository $repository,int $id,Request $reque
         }
         return $this->render('trajet/updatetrajet.html.twig', ["trajet"=>$for->createView()]);
     }
-    #[Route('/trajet/new', name: 'trajet_new')]
-    public function new(Request $request, EntityManagerInterface $em): Response
-    {
-        $trajet = new Trajet();
-
-        $form = $this->createForm(TrajetType::class, $trajet);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            // Initialiser nb_places avec la capacité du véhicule choisi
-            if ($trajet->getVehicule()) {
-                $trajet->setNbPlaces($trajet->getVehicule()->getCapacite());
-            }
-
-            $em->persist($trajet);
-            $em->flush();
-
-            $this->addFlash('success', 'Trajet ajouté avec succès !');
-
-            return $this->redirectToRoute('liste_trajet');
-        }
-
-        return $this->render('trajet/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
+//    #[Route('/trajet/new', name: 'trajet_new')]
+//    public function new(Request $request, EntityManagerInterface $em): Response
+//    {
+//        $trajet = new Trajet();
+//
+//        $form = $this->createForm(TrajetType::class, $trajet);
+//        $form->handleRequest($request);
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//
+//            // Initialiser nb_places avec la capacité du véhicule choisi
+//            if ($trajet->getVehicule()) {
+//                $trajet->setNbPlaces($trajet->getVehicule()->getCapacite());
+//            }
+//
+//            $em->persist($trajet);
+//            $em->flush();
+//
+//            $this->addFlash('success', 'Trajet ajouté avec succès !');
+//
+//            return $this->redirectToRoute('liste_trajet');
+//        }
+//
+//        return $this->render('trajet/new.html.twig', [
+//            'form' => $form->createView(),
+//        ]);
+//    }
 
     #[Route('/trajets', name: 'frontoffice_trajets')]
     public function trajets(TrajetRepository $trajetRepository): Response

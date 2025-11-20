@@ -25,7 +25,7 @@
                 <td>{{ i.capacite }}</td>
                 <td>{{ i.etat }}</td>
                 <td>
-                    <a href="{{ path('app_trajet_new', {'vehiculeId': i.id}) }}">Ajouter un trajet</a> |
+                    <a href="{{ path('trajet_new', {'vehiculeId': i.id}) }}">Ajouter un trajet</a> |
                     <a href="{{ path('app_vehicule_update', {'id': i.id}) }}">Modifier</a> |
                     <a href="{{ path('app_vehicule_delete', {'id': i.id}) }}"
                        onclick="return confirm('Voulez-vous vraiment supprimer ce véhicule ?');">
