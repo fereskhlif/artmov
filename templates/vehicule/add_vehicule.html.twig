@@ -1,0 +1,44 @@
+{% extends 'Template.html.twig' %}
+
+{% block title %}Ajouter un Véhicule{% endblock %}
+{% block page_title %}Ajouter un Véhicule{% endblock %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Home</a></li>
+    <li class="breadcrumb-item active">Ajouter Véhicule</li>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card shadow" style="border-radius: 12px;">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-car-front-fill me-2"></i>
+                        Formulaire d'ajout de véhicule
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {{ form_start(formVehicule, {'attr': {'class': 'row g-4'}}) }}
+                    {% for child in formVehicule.children %}
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                {{ form_label(child, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                {{ form_widget(child, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(child) }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="col-12 text-end mt-4">
+                        <a href="{{ path('liste_vehicule') }}" class="btn btn-secondary me-2">
+                            <i class="bi bi-x-circle me-2"></i> Annuler
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-2"></i> Enregistrer
+                        </button>
+                    </div>
+                    {{ form_end(formVehicule) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

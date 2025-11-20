@@ -8,31 +8,28 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: OeuvreRepository::class)]
 class Oeuvre
 {
-  #[ORM\Id]
-  #[ORM\GeneratedValue]
-  #[ORM\Column(name: "Id_oeuvre", type: "integer")]
-  private int $Id_oeuvre;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(name: 'Id_oeuvre')]
+    private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $titre = null;
 
+    #[ORM\Column(type: 'text')]
+    private ?string $description = null;
 
-  #[ORM\Column]
-  private string $image;
+    #[ORM\Column]
+    private ?float $prix = null;
 
-  #[ORM\Column(length: 255)]
-  private ?string $titre = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
 
-  #[ORM\Column(length: 255)]
-  private ?string $description = null;
+    #[ORM\ManyToOne(targetEntity: Categorie::class, inversedBy: 'oeuvres')]
+    #[ORM\JoinColumn(name: 'categorie_id', referencedColumnName: 'id')]
+    private ?Categorie $categorie = null;
 
-  #[ORM\Column]
-  private ?float $Prix = null;
-
-
-
-
-
-
-
+    // Getters et setters...
     public function getId(): ?int
     {
         return $this->id;
@@ -46,7 +43,6 @@ class Oeuvre
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
-
         return $this;
     }
 
@@ -58,35 +54,40 @@ class Oeuvre
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
     public function getPrix(): ?float
     {
-        return $this->Prix;
+        return $this->prix;
     }
 
-    public function setPrix(float $Prix): static
+    public function setPrix(float $prix): static
     {
-        $this->Prix = $Prix;
-
+        $this->prix = $prix;
         return $this;
     }
 
     public function getImage(): ?string
     {
-        return $this->Image;
+        return $this->image;
     }
 
-    public function setImage(string $Image): static
+    public function setImage(?string $image): static
     {
-        $this->Image = $Image;
-
+        $this->image = $image;
         return $this;
     }
 
+    public function getCategorie(): ?Categorie
+    {
+        return $this->categorie;
+    }
 
+    public function setCategorie(?Categorie $categorie): static
+    {
+        $this->categorie = $categorie;
+        return $this;
+    }
 
-    
 }

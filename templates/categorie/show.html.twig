@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la catégorie{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+  <h1>Détails de la catégorie : {{ categorie.nom }}</h1>
+
+  <div class="row">
+    <div class="col-md-8">
+      <ul class="list-group mb-3">
+        <li class="list-group-item">
+          <strong>ID:</strong> #{{ categorie.id }}
+        </li>
+        <li class="list-group-item">
+          <strong>Nom:</strong> {{ categorie.nom }}
+        </li>
+        <li class="list-group-item">
+          <strong>Description:</strong> 
+          <p class="mb-0 mt-2">{{ categorie.description ? categorie.description : 'Aucune description' }}</p>
+        </li>
+        <li class="list-group-item">
+          <strong>Nombre d'œuvres:</strong> {{ categorie.oeuvres|length }}
+        </li>
+      </ul>
+
+      {% if categorie.oeuvres|length > 0 %}
+      <div class="mt-4">
+        <h5>Œuvres dans cette catégorie :</h5>
+        <div class="list-group">
+          {% for oeuvre in categorie.oeuvres %}
+          <a href="{{ path('app_oeuvres_show', {'id': oeuvre.id}) }}" class="list-group-item list-group-item-action">
+            {{ oeuvre.titre }} - {{ oeuvre.prix }} DT
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mt-4">
+    <a class="btn btn-secondary" href="{{ path('app_categories') }}">Retour à la liste</a>
+    <a class="btn btn-warning" href="{{ path('app_categories_edit', {'id': categorie.id}) }}">Modifier</a>
+    <form method="post" action="{{ path('app_categories_delete', {'id': categorie.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette catégorie ?');">
+      <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorie.id) }}">
+      <button class="btn btn-danger" type="submit">Supprimer</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

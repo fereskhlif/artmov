@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des catégories{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+  <h1>Liste des catégories</h1>
+
+  <div class="mb-3">
+    <a class="btn btn-primary" href="{{ path('app_categories_new') }}">Ajouter une catégorie</a>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Nombre d'œuvres</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for categorie in categories %}
+      <tr>
+        <td>{{ categorie.id }}</td>
+        <td>{{ categorie.nom }}</td>
+        <td>{{ categorie.description|length > 50 ? categorie.description|slice(0, 50) ~ '...' : categorie.description }}</td>
+        <td>{{ categorie.oeuvres|length }}</td>
+        <td>
+          <a class="btn btn-sm btn-info" href="{{ path('app_categories_show', {'id': categorie.id}) }}">Voir</a>
+          <a class="btn btn-sm btn-warning" href="{{ path('app_categories_edit', {'id': categorie.id}) }}">Modifier</a>
+          <form method="post" action="{{ path('app_categories_delete', {'id': categorie.id}) }}" style="display:inline" onsubmit="return confirm('Voulez-vous vraiment supprimer cette catégorie ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorie.id) }}">
+            <button class="btn btn-sm btn-danger" type="submit">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5" class="text-center">Aucune catégorie trouvée.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

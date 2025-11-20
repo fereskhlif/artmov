@@ -1,0 +1,39 @@
+{% extends 'Template.html.twig' %}
+{% block title %}Liste des véhicules{% endblock %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('liste_vehicule') }}">liste des Véhicules</a></li>
+{#    <li class="breadcrumb-item active">liste des Véhicules</li>#}
+{% endblock %}
+{% block content %}
+    <h1>Liste des Vehicules</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Matricule</th>
+            <th>Type</th>
+            <th>Capacité</th>
+            <th>État</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in vehicule %}
+            <tr>
+                <td>{{ i.matricule }}</td>
+                <td>{{ i.type }}</td>
+                <td>{{ i.capacite }}</td>
+                <td>{{ i.etat }}</td>
+                <td>
+                    <a href="{{ path('app_trajet_new', {'vehiculeId': i.id}) }}">Ajouter un trajet</a> |
+                    <a href="{{ path('app_vehicule_update', {'id': i.id}) }}">Modifier</a> |
+                    <a href="{{ path('app_vehicule_delete', {'id': i.id}) }}"
+                       onclick="return confirm('Voulez-vous vraiment supprimer ce véhicule ?');">
+                        Supprimer
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
