@@ -28,6 +28,12 @@ class OeuvreController extends AbstractController
         ]);
     }
 
+    #[Route('/dash', name: 'app_dashboard')]
+    public function dashboard(): Response
+    {
+        return $this->render('index3.html.twig');
+    }
+
     #[Route('/oeuvres/{id}', name: 'app_oeuvres_show', methods: ['GET'], requirements: ['id' => '\\d+'])]
     public function show(Oeuvre $oeuvre): Response
     {

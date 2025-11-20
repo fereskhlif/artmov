@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ oeuvre.titre }} - ArtMove{% endblock %}
+
+{% block body %}
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="bg-light py-3">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_oeuvres_gallery') }}">Galerie</a></li>
+            <li class="breadcrumb-item active">{{ oeuvre.titre }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Product Details -->
+<section class="product-details-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Image Column -->
+            <div class="col-lg-6 mb-4">
+                <div class="product-image">
+                    {% if oeuvre.image %}
+                    <img src="{{ oeuvre.image }}" class="img-fluid rounded shadow" alt="{{ oeuvre.titre }}">
+                    {% else %}
+                    <div class="bg-light rounded shadow d-flex align-items-center justify-content-center" style="height: 400px;">
+                        <i class="fas fa-image fa-5x text-muted"></i>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Details Column -->
+            <div class="col-lg-6">
+                <div class="product-details">
+                    <h1 class="h2 mb-3">{{ oeuvre.titre }}</h1>
+                    
+                    {% if oeuvre.categorie %}
+                    <div class="mb-3">
+                        <span class="badge bg-success fs-6">{{ oeuvre.categorie.nom }}</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="price-section mb-4">
+                        <h2 class="text-success">{{ oeuvre.prix }} DT</h2>
+                    </div>
+
+                    <div class="description-section mb-4">
+                        <h4>Description</h4>
+                        <p class="lead">{{ oeuvre.description }}</p>
+                    </div>
+
+                    <div class="action-buttons">
+                        <div class="d-grid gap-2 d-md-flex">
+                            <button class="btn btn-primary btn-lg me-md-2">
+                                <i class="fas fa-shopping-cart"></i> Ajouter au panier
+                            </button>
+                            <button class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-heart"></i> Favoris
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="product-meta mt-4 pt-4 border-top">
+                        <div class="row">
+                            <div class="col-6">
+                                <small class="text-muted">Référence: #{{ oeuvre.id }}</small>
+                            </div>
+                            <div class="col-6 text-end">
+                                <small class="text-muted">Disponible</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Works -->
+        {% if related_oeuvres is defined and related_oeuvres|length > 0 %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="section-title">Œuvres similaires</h3>
+                <div class="row">
+                    {% for related in related_oeuvres %}
+                    <div class="col-md-3 col-6 mb-4">
+                        <div class="card h-100">
+                            {% if related.image %}
+                            <img src="{{ related.image }}" class="card-img-top" alt="{{ related.titre }}" style="height: 150px; object-fit: cover;">
+                            {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                                <i class="fas fa-image text-muted"></i>
+                            </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h6 class="card-title">{{ related.titre }}</h6>
+                                <p class="card-text text-success mb-1">{{ related.prix }} DT</p>
+                                <a href="{{ path('app_oeuvre_details', {'id': related.id}) }}" class="btn btn-sm btn-outline-primary">Voir</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.product-details-section {
+    background: #f8f9fa;
+}
+.breadcrumb {
+    background: transparent !important;
+}
+.product-image img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #0F632C;
+    margin-bottom: 2rem;
+}
+</style>
+{% endblock %}
