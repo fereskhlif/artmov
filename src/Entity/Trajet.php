@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\TrajetRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,18 +14,23 @@ class Trajet
     private ?int $id = null;
 
     #[ORM\Column(type: 'datetime')]
+    #[Assert\NotBlank(message:"le champ date de départ est obligatoire")]
     private ?\DateTimeInterface $date_dep = null;
 
     #[ORM\Column(type: 'datetime')]
+    #[Assert\NotBlank(message:"le champ date d'arrivée est obligatoire")]
     private ?\DateTimeInterface $date_arr = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message:"le champ ville de départ est obligatoire")]
     private ?string $ville_dep = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message:"le champ ville d'arrivée est obligatoire")]
     private ?string $ville_arr = null;
 
     #[ORM\ManyToOne(inversedBy: 'trajets')]
+    #[Assert\NotBlank(message:"le champ vehicule est obligatoire")]
     private ?Vehicule $vehicule = null;
 
     #[ORM\Column]

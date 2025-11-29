@@ -8,8 +8,8 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-10 offset-md-1">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
             <div class="card shadow" style="border-radius: 12px;">
                 <div class="card-header bg-primary text-white">
                     <h3 class="card-title mb-0">
@@ -18,24 +18,57 @@
                     </h3>
                 </div>
                 <div class="card-body">
-                    {{ form_start(formVehicule, {'attr': {'class': 'row g-4'}}) }}
-                    {% for child in formVehicule.children %}
+                    {{ form_start(formVehicule, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    <div class="row g-3">
                         <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                {{ form_label(child, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                                {{ form_widget(child, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_errors(child) }}
-                            </div>
+                            {{ form_label(formVehicule.matricule, "Matricule") }}
+                            {{ form_widget(formVehicule.matricule, {
+                                attr: {
+                                    class: 'form-control ' ~ (formVehicule.matricule.vars.valid ? 'is-valid' : 'is-invalid')
+                                }
+                            }) }}
+                            {{ form_errors(formVehicule.matricule) }}
                         </div>
-                    {% endfor %}
-                    <div class="col-12 text-end mt-4">
+
+                        <div class="col-md-6">
+                            {{ form_label(formVehicule.type, "Type de véhicule") }}
+                            {{ form_widget(formVehicule.type, {
+                                attr: {
+                                    class: 'form-control ' ~ (formVehicule.type.vars.valid ? 'is-valid' : 'is-invalid')
+                                }
+                            }) }}
+                            {{ form_errors(formVehicule.type) }}
+                        </div>
+
+                        <div class="col-md-6">
+                            {{ form_label(formVehicule.capacite, "Capacité") }}
+                            {{ form_widget(formVehicule.capacite, {
+                                attr: { class: 'form-control ' ~ (formVehicule.capacite.vars.valid ? 'is-valid' : 'is-invalid') }
+                            }) }}
+                            {{ form_errors(formVehicule.capacite) }}
+                        </div>
+
+                        <div class="col-md-6">
+                            {{ form_label(formVehicule.etat, "État") }}
+                            {{ form_widget(formVehicule.etat, {
+                                attr: { class: 'form-control ' ~ (formVehicule.etat.vars.valid ? 'is-valid' : 'is-invalid') }
+                            }) }}
+                            {{ form_errors(formVehicule.etat) }}
+                        </div>
+                    </div>
+
+                    {{ form_rest(formVehicule) }}
+
+                    <div class="text-end mt-4">
                         <a href="{{ path('liste_vehicule') }}" class="btn btn-secondary me-2">
                             <i class="bi bi-x-circle me-2"></i> Annuler
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save me-2"></i> Enregistrer
+                            <i class="bi bi-save me-2"></i> Ajouter véhicule
                         </button>
                     </div>
+
                     {{ form_end(formVehicule) }}
                 </div>
             </div>

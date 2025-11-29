@@ -3,38 +3,78 @@
 {% block title %}Mise à jour du véhicule{% endblock %}
 
 {% block content %}
-    <h1 class="text-center mb-4">Mettre à jour le véhicule</h1>
-
-    <div class="container mt-4">
-        <div class="card shadow p-4" style="border-radius: 12px;">
+    <div class="card shadow" style="border-radius: 12px;">
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title mb-0">
+                <i class="bi bi-car-front-fill me-2"></i>
+                Mettre à jour le véhicule
+            </h3>
+        </div>
             <div class="card-body">
+                {{ form_start(formvehicule,{'attr': {'novalidate': 'novalidate'}} ) }}
 
-                {{ form_start(formvehicule, {'attr': {'class': 'row g-4'}}) }}
+                {{ form_label(formvehicule.matricule, "Matricule") }}
+                {{ form_widget(formvehicule.matricule, {
+                    attr: {
+                        class: 'form-control ' ~ (formvehicule.matricule.vars.valid ? 'is-valid' : 'is-invalid')
+                    }
+                }) }}
+                {{ form_errors(formvehicule.matricule) }}<br><br>
 
-                {% for child in formvehicule %}
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            {{ form_label(child, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(child, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-                    </div>
-                {% endfor %}
-                <div class="col-12 text-end mt-3">
-                    <button class="btn btn-success btn-lg px-4">
-                        Mettre à jour
-                    </button>
-                </div>
+                {{ form_label(formvehicule.type, "Type de véhicule") }}
+                {{ form_widget(formvehicule.type, {
+                    attr: {
+                        class: 'form-control ' ~ (formvehicule.type.vars.valid ? 'is-valid' : 'is-invalid')
+                    }
+                }) }}
+                {{ form_errors(formvehicule.type) }}<br><br>
 
+                {{ form_label(formvehicule.capacite, "Capacité") }}
+                {{ form_widget(formvehicule.capacite, {
+                    attr: { class: 'form-control ' ~ (formvehicule.capacite.vars.valid ? 'is-valid' : 'is-invalid') }
+                }) }}
+                {{ form_errors(formvehicule.capacite) }}<br><br>
 
+                {{ form_label(formvehicule.etat, "État") }}
+                {{ form_widget(formvehicule.etat, {
+                    attr: { class: 'form-control ' ~ (formvehicule.etat.vars.valid ? 'is-valid' : 'is-invalid') }
+                }) }}
+                {{ form_errors(formvehicule.etat) }}<br><br>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save me-2"></i> Modifier vehicule
+                </button>
                 {{ form_end(formvehicule) }}
-
-                <div class="mt-3">
-                    <a href="{{ path('liste_vehicule') }}" class="text-decoration-none">
-                        ← Retour à la liste des véhicules
-                    </a>
-                </div>
-
             </div>
+        </div>
+
+{#                {{ form_start(formvehicule, {'attr': {'class': 'row g-4'}}) }}#}
+
+{#                {% for child in formvehicule %}#}
+{#                    <div class="col-md-6">#}
+{#                        <div class="form-group mb-3">#}
+{#                            {{ form_label(child, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}#}
+{#                            {{ form_widget(child, {'attr': {'class': 'form-control'}}) }}#}
+{#                        </div>#}
+{#                    </div>#}
+{#                {% endfor %}#}
+{#                <div class="col-12 text-end mt-3">#}
+{#                    <button class="btn btn-success btn-lg px-4">#}
+{#                        Mettre à jour#}
+{#                    </button>#}
+{#                </div>#}
+
+
+{#                {{ form_end(formvehicule) }}#}
+
+{#                <div class="mt-3">#}
+{#                    <a href="{{ path('liste_vehicule') }}" class="text-decoration-none">#}
+{#                        ← Retour à la liste des véhicules#}
+{#                    </a>#}
+{#                </div>#}
+
+{#            </div>#}
+{#        </div>#}
+    </div>
         </div>
     </div>
 
