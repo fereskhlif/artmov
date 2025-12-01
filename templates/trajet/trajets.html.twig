@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Transports disponibles{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center">Transports disponibles</h2>
+
+        <div class="row">
+            {% for trajet in trajets %}
+                <div class="col-md-4 mb-4">
+                    <div class="card" style="width: 18rem;">
+
+                        <img class="card-img-top"
+                             src="{{ asset('/backend/img/default-2.jpg') }}"
+                             alt="Vehicule">
+
+                        <div class="card-body">
+
+                            <h5 class="card-title">
+                                {{ trajet.villeDep }} → {{ trajet.villeArr }}
+                            </h5>
+
+                            <p class="card-text">
+                                <strong>Départ :</strong> {{ trajet.dateDep|date('d/m/Y H:i') }}<br>
+                                <strong>Arrivée :</strong> {{ trajet.dateArr|date('d/m/Y H:i') }}<br>
+                                <strong>Véhicule :</strong> {{ trajet.vehicule.type }} ({{ trajet.vehicule.matricule }})<br>
+                                <strong>Places dispo :</strong> {{ trajet.nbPlaces }}<br>
+                                <strong>Statut :</strong>
+                                <span class="badge bg-{{ trajet.statut == 'Complet' ? 'danger' : 'success' }}">
+                                    {{ trajet.statut }}
+                                </span>
+                            </p>
+
+                            {% if trajet.nbPlaces > 0 and trajet.statut != 'Complet' %}
+                                <a href="{{ path('trajet_reserver', { id: trajet.id }) }}"
+                                   class="btn btn-primary w-100">
+                                    Réserver
+                                </a>
+                            {% else %}
+                                <button class="btn btn-secondary w-100" disabled>Complet</button>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-center mt-5">Aucun trajet disponible pour le moment.</p>
+            {% endfor %}
+
+        </div>
+    </div>
+{% endblock %}

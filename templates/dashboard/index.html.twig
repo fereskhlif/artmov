@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de Bord Administrateur{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="my-4">Tableau de Bord Administrateur</h1>
+
+        <!-- Cartes de statistiques -->
+        <div class="row">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Utilisateurs Totaux</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ totalUsers }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Artistes</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ artists|length }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-palette fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    Utilisateurs Actifs</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ activeUsers }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-user-check fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liens rapides -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Actions Rapides</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <a href="{{ path('admin_users_index') }}" class="btn btn-primary btn-block">
+                                    <i class="fas fa-users"></i> Gérer les Utilisateurs
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="{{ path('admin_users_new') }}" class="btn btn-success btn-block">
+                                    <i class="fas fa-plus"></i> Créer un Utilisateur
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

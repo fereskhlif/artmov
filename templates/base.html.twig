@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}ArtMove</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Couleur du navigateur (Chrome, Edge, mobile) -->
     <meta name="theme-color" content="#28a745">
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
@@ -21,36 +19,76 @@
 <body>
 <!-- Start Header/Navigation -->
 <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
-
     <div class="container">
-        <a class="navbar-brand" href="index.html">ArtMove<span>.</span></a>
+        <a class="navbar-brand" href="{{ path('app_trajet') }}">ArtMove<span>.</span></a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarsFurni">
-            <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{path('app_trajet')}}">Transport</a>
-                </li>
-{#                <li><a class="nav-link" href="shop.html">Shop</a></li>#}
-               <li><a class="nav-link {{ about_active | default }}" href="{{ path('app_about_us') }}">About us</a></li>}
-{#                <li><a class="nav-link" href="services.html">Services</a></li>#}
-{#                <li><a class="nav-link" href="blog.html">Blog</a></li>#}
-                <li><a class="nav-link {{ contact_active | default }}" href="contact.html">Contact us</a></li>
+            <ul class="navbar-nav me-auto">
+                {% if app.user %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_dashboard') }}">Dashboard Admin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('admin_users_index') }}">Gestion Utilisateurs</a>
+                        </li>
+                    {% elseif is_granted('ROLE_ARTISTE') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_artist_space') }}">Espace Artiste</a>
+                        </li>
+                    {% elseif is_granted('ROLE_CLIENT') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_client_space') }}">Espace Client</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
             </ul>
 
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                <li><a class="nav-link" href="#"><img src="images/user.svg"></a></li>
-                <li><a class="nav-link" href="cart.html"><img src="images/cart.svg"></a></li>
+                {% if app.user %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>{{ app.user.prenom }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ path('app_profile') }}">Mon Profil</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_profile_edit') }}">Modifier Profil</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li><a class="nav-link" href="{{ path('app_login') }}">Connexion</a></li>
+                    <li><a class="nav-link" href="{{ path('app_register') }}">Inscription</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>
-
 </nav>
-<!-- End Header/Navigation -->
+
+<!-- Flash Messages -->
+<div class="container mt-3">
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+</div>
+
 {% block body %}{% endblock %}
+
+
 <!-- Start Footer Section -->
 <footer class="footer-section">
     <div class="container relative">
@@ -59,28 +97,7 @@
             <img src="images/sofa.png" alt="Image" class="img-fluid">
         </div>
 
-{#        <div class="row">#}
-{#            <div class="col-lg-8">#}
-{#                <div class="subscription-form">#}
-{#                    <h3 class="d-flex align-items-center"><span class="me-1"><img src="images/envelope-outline.svg" alt="Image" class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>#}
 
-{#                    <form action="#" class="row g-3">#}
-{#                        <div class="col-auto">#}
-{#                            <input type="text" class="form-control" placeholder="Enter your name">#}
-{#                        </div>#}
-{#                        <div class="col-auto">#}
-{#                            <input type="email" class="form-control" placeholder="Enter your email">#}
-{#                        </div>#}
-{#                        <div class="col-auto">#}
-{#                            <button class="btn btn-primary">#}
-{#                                <span class="fa fa-paper-plane"></span>#}
-{#                            </button>#}
-{#                        </div>#}
-                    </form>
-
-                </div>
-            </div>
-        </div>
 
         <div class="row g-5 mb-5">
             <div class="col-lg-4">

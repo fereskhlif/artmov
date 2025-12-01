@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - ArtMove{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="jumbotron">
+            <h1 class="display-4">Bienvenue sur ArtMove</h1>
+            <p class="lead">Votre plateforme de gestion artistique.</p>
+            <hr class="my-4">
+            <p>Connectez-vous ou inscrivez-vous pour accéder à votre espace.</p>
+            <div class="mt-4">
+                {% if not app.user %}
+                    <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg me-2">Connexion</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-outline-primary btn-lg">Inscription</a>
+                {% else %}
+                    <p>Vous êtes connecté en tant que <strong>{{ app.user.prenom }} {{ app.user.nom }}</strong></p>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_dashboard') }}" class="btn btn-success btn-lg">Dashboard Admin</a>
+                    {% elseif is_granted('ROLE_ARTISTE') %}
+                        <a href="{{ path('app_artist_space') }}" class="btn btn-success btn-lg">Espace Artiste</a>
+                    {% elseif is_granted('ROLE_CLIENT') %}
+                        <a href="{{ path('app_client_space') }}" class="btn btn-success btn-lg">Espace Client</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

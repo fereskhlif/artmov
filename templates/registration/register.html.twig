@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - ArtMove{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="text-center mb-0">Inscription</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        {% for flash_error in app.flashes('verify_email_error') %}
+                            <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                        {% endfor %}
+
+                        {{ form_start(registrationForm, {'attr': {'class': 'row g-3'}}) }}
+
+                        <div class="col-md-6">
+                            {{ form_row(registrationForm.nom) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(registrationForm.prenom) }}
+                        </div>
+
+                        <div class="col-12">
+                            {{ form_row(registrationForm.email) }}
+                        </div>
+
+                        <div class="col-12">
+                            {{ form_row(registrationForm.role) }}
+                        </div>
+
+                        <!-- Champs conditionnels pour les artistes -->
+                        <div id="artist-fields" class="col-12" style="display: none;">
+                            <div class="row">
+                                <div class="col-12">
+                                    {{ form_row(registrationForm.styleArtistique) }}
+                                </div>
+                                <div class="col-12 mt-3">
+                                    {{ form_row(registrationForm.biographie) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            {{ form_row(registrationForm.plainPassword) }}
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-check">
+                                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                                {{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                            </div>
+                            {{ form_errors(registrationForm.agreeTerms) }}
+                        </div>
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100 btn-lg">S'inscrire</button>
+                        </div>
+
+                        {{ form_end(registrationForm) }}
+
+                        <div class="text-center mt-3">
+                            <p>Déjà un compte ? <a href="{{ path('app_login') }}" class="text-decoration-none">Connectez-vous</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleSelect = document.querySelector('#registration_form_role');
+            const artistFields = document.getElementById('artist-fields');
+
+            function toggleArtistFields() {
+                if (roleSelect.value === 'ROLE_ARTISTE') {
+                    artistFields.style.display = 'block';
+                } else {
+                    artistFields.style.display = 'none';
+                }
+            }
+
+            roleSelect.addEventListener('change', toggleArtistFields);
+            toggleArtistFields(); // Initial state
+        });
+    </script>
+
+    <style>
+        .card {
+            border: none;
+            border-radius: 15px;
+        }
+        .card-header {
+            border-radius: 15px 15px 0 0 !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #0F632C, #006400);
+            border: none;
+            border-radius: 8px;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 12px;
+        }
+    </style>
+{% endblock %}
