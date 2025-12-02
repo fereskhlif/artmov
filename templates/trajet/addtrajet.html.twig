@@ -1,78 +1,40 @@
 {% extends 'Template.html.twig' %}
-
-{% block title %}Ajouter un Trajet{% endblock %}
-
+{% block title %}Add Trajet{% endblock %}
 {% block content %}
     <div class="container">
-        <div class="card shadow px-3 py-3" style="border-radius: 12px;">
-            <div class="card-header bg-primary text-white">
-                <h3 class="card-title mb-0">
-                    <i class="bi bi-car-front-fill me-2"></i>
-                    Formulaire d'ajout de trajet
-                </h3>
-            </div>
-
-            <div class="card-body">
-                {{ form_start(trajet, {'attr': {'novalidate': 'novalidate'}}) }}
-
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        {{ form_label(trajet.date_dep, "Date de départ") }}
-                        {{ form_widget(trajet.date_dep, {
-                            attr: { class: 'form-control ' ~ (trajet.date_dep.vars.valid ? 'is-valid' : 'is-invalid') }
-                        }) }}
-                        {{ form_errors(trajet.date_dep) }}
-                    </div>
-
-                    <div class="col-md-6">
-                        {{ form_label(trajet.date_arr, "Date d'arrivée") }}
-                        {{ form_widget(trajet.date_arr, {
-                            attr: { class: 'form-control ' ~ (trajet.date_arr.vars.valid ? 'is-valid' : 'is-invalid') }
-                        }) }}
-                        {{ form_errors(trajet.date_arr) }}
-                    </div>
-
-                    <div class="col-md-6">
-                        {{ form_label(trajet.ville_dep, "Ville de départ") }}
-                        {{ form_widget(trajet.ville_dep, {
-                            attr: { class: 'form-control ' ~ (trajet.ville_dep.vars.valid ? 'is-valid' : 'is-invalid') }
-                        }) }}
-                        {{ form_errors(trajet.ville_dep) }}
-                    </div>
-
-                    <div class="col-md-6">
-                        {{ form_label(trajet.ville_arr, "Ville d'arrivée") }}
-                        {{ form_widget(trajet.ville_arr, {
-                            attr: { class: 'form-control ' ~ (trajet.ville_arr.vars.valid ? 'is-valid' : 'is-invalid') }
-                        }) }}
-                        {{ form_errors(trajet.ville_arr) }}
-                    </div>
-
-                    <div class="col-12">
-                        {{ form_label(trajet.vehicule, "Véhicule") }}
-                        {{ form_widget(trajet.vehicule, {
-                            attr: { class: 'form-select ' ~ (trajet.vehicule.vars.valid ? 'is-valid' : 'is-invalid') }
-                        }) }}
-                        {{ form_errors(trajet.vehicule) }}
-                    </div>
-
-                    <div class="col-md-6">
-                        {{ form_label(trajet.nb_places, "Nombre de places") }}
-                        {{ form_widget(trajet.nb_places, {
-                            attr: { class: 'form-control ' ~ (trajet.nb_places.vars.valid ? 'is-valid' : 'is-invalid') }
-                        }) }}
-                        {{ form_errors(trajet.nb_places) }}
-                    </div>
-                </div>
-
-                <div class="text-end mt-4">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save me-1"></i> Ajouter Trajet
-                    </button>
-                </div>
-
-                {{ form_end(trajet) }}
-            </div>
-        </div>
+<div class="card shadow px-lg-1" style="border-radius: 12px;">
+    <div class="card-header bg-primary text-white">
+        <h3 class="card-title mb-0">
+            <i class="bi bi-car-front-fill me-2"></i>
+            Formulaire d'ajout de trajet
+        </h3>
     </div>
+
+    {{ form_start(trajet,{'attr': {'novalidate': 'novalidate'}} ) }}
+    {{ form_label(trajet.date_dep,"Date de départ") }}
+    {{ form_widget(trajet.date_dep ) }}<br>
+    {{ form_errors(trajet.date_dep) }}<br>
+
+    {{ form_label(trajet.date_arr,"Date d'arrivée") }}
+    {{ form_widget(trajet.date_arr) }}<br>
+    {{ form_errors(trajet.date_arr) }}<br>
+
+    {{ form_label(trajet.ville_dep,"Ville de départ") }}
+    {{ form_widget(trajet.ville_dep) }}<br>
+    {{ form_errors(trajet.ville_dep) }}<br>
+
+    {{ form_label(trajet.ville_arr,"Ville d'arrivée") }}
+    {{ form_widget(trajet.ville_arr) }}<br>
+    {{ form_errors(trajet.ville_arr) }}<br>
+
+    {{ form_label(trajet.vehicule,"Véhicule") }}
+    {{ form_widget(trajet.vehicule) }}<br>
+    {{ form_errors(trajet.vehicule) }}<br>
+
+    {{ form_end(trajet) }}
+</div>
+    </div>
+    </div>
+
+{# {{ form(trajet) }}#}
 {% endblock %}

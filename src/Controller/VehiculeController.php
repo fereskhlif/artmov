@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\TrajetRepository;
 
 final class VehiculeController extends AbstractController
 {
@@ -24,7 +25,7 @@ final class VehiculeController extends AbstractController
     #[Route('/liste_vehicule', name: 'liste_vehicule')]
     public function listeVehicule(VehiculeRepository $vehiculeRepository)
     {
-        $vehicule = $vehiculeRepository->findAll();
+        $vehicule = $vehiculeRepository->showAllVehiculeByCapacity();
         return $this->render('vehicule/liste_vehicule.html.twig', ["vehicule" => $vehicule]);
     }
     #[Route('/dashboard', name: 'app_dashboard')]
@@ -82,6 +83,29 @@ final class VehiculeController extends AbstractController
         $em->flush();
 
         return $this->redirectToRoute('liste_vehicule');
+    }
+    #[Route('showBooksByAuthors/{id}', name: 'app_show_books_by_authors')]
+public function listetrajetsbyvehicule(TrajetRepository $repo ,$id)
+{
+    $trajets = $repo->showAlltrajetByVehicule($id);
+    return $this->render('vehicule/listetrajetsbyvehicule.html.twig', ["tab" => $trajets]);
+
+}
+    #[Route('/vehicules', name: 'app_vehicule_list')]
+    public function list(Request $request, VehiculeRepository $repo): Response
+    {
+        $matricule = $request->query->get('matricule');
+
+        if ($matricule) {
+            $vehicules = $repo->findByMatricule($matricule);
+        } else {
+            $vehicules = $repo->findAll();
+        }
+
+        return $this->render('vehicule/liste_vehicule.html.twig', [
+            'vehicule' => $vehicules,
+            'searchTerm' => $matricule,
+        ]);
     }
 
 

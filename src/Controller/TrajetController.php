@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-use App\Form\TrajetType;
+use qyApp\Form\TrajetType;
 use App\Entity\Vehicule;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -41,7 +41,7 @@ final class TrajetController extends AbstractController
     #[Route('/listetrajet', name: 'liste_trajet')]
     public function listeTrajet(TrajetRepository $repository )
     {
-        $trajet=$repository->findAll();
+        $trajet=$repository->showAlltrajetOrderByVilleDep();
         return $this->render('trajet/liste.html.twig', ["trajet"=>$trajet]);
     }
     #[Route('/addtrajet', name: 'app_trajet_add')]
@@ -156,13 +156,12 @@ public function updatetrajet(TrajetRepository $repository,int $id,Request $reque
     #[Route('/trajet/reserver/{id}', name: 'trajet_reserver')]
     public function reserver(Trajet $trajet, ManagerRegistry $doctrine): Response
     {
-        // Vérifier si le trajet n'est pas déjà complet
+
         if ($trajet->getStatut() === 'Complet') {
             $this->addFlash('error', 'Ce trajet est complet.');
             return $this->redirectToRoute('frontoffice_trajets');
         }
 
-        // Vérifier s'il reste des places
         if ($trajet->getNbPlaces() > 0) {
             // Décrémenter le nombre de places
             $trajet->setNbPlaces($trajet->getNbPlaces() - 1);
@@ -172,7 +171,6 @@ public function updatetrajet(TrajetRepository $repository,int $id,Request $reque
                 $trajet->setStatut('Complet');
             }
 
-            // Persister les changements
             $em = $doctrine->getManager();
             $em->persist($trajet);
             $em->flush();
@@ -184,5 +182,31 @@ public function updatetrajet(TrajetRepository $repository,int $id,Request $reque
 
         return $this->redirectToRoute('frontoffice_trajets');
     }
+    #[Route('/trajett', name: 'app_trajet_list')]
+    public function list(Request $request, TrajetRepository $repo): Response
+    {
+        $dateStr = $request->query->get('date');
+        $trajet = [];
+
+        if ($dateStr) {
+            try {
+                $date = new \DateTime($dateStr);
+                $trajet = $repo->searchVehiculeByDateDep($date);
+            } catch (\Exception $e) {
+
+                $trajet = [];
+            }
+        } else {
+            $trajet = $repo->findAll();
+        }
+
+        return $this->render('trajet/liste.html.twig', [
+            'trajet' => $trajet,
+            'searchTerm' => $dateStr,
+
+
+        ]);
+    }
+
 
 }

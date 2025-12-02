@@ -1,0 +1,40 @@
+{% extends 'Template.html.twig' %}
+
+{% block title %}Liste des véhicules{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Home</a></li>
+    <li class="breadcrumb-item active">Liste des Véhicules</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Liste des Véhicules</h1>
+    <a href="{{ path('app_vehicule_add') }}" class="btn btn-success">
+        <i class="bi bi-plus-circle me-1"></i> Ajouter un véhicule
+    </a>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-primary">
+        <tr>
+            <th>Ville de depart</th>
+            <th>Ville d'aarivée</th>
+            <th>date de depart</th>
+            <th>date d arrivée</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for i in tab %}
+            <tr>
+                <td>{{ i.villeDep }}</td>
+                <td>{{ i.villeArr }}</td>
+                <td>{{ i.dateDep|date('d/m/Y H:i') }}</td>
+                <td>{{ i.dateArr|date('d/m/Y H:i') }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

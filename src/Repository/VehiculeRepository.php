@@ -15,6 +15,18 @@ class VehiculeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Vehicule::class);
     }
+    public function showAllVehiculeByCapacity()
+    {
+        $qb=$this->createQueryBuilder('v')
+            ->orderBy('v.capacite','DESC');
+        return $qb->getQuery()->getResult();
+    }
+    public function searchVehiculeByMatricule(string $matricule):array
+    {
+        return $this->createQueryBuilder('v')
+            ->where('v.matricule LIKE :matricule')
+            ->setParameter('matricule','%'.$matricule.'%');
+    }
 
     //    /**
     //     * @return Vehicule[] Returns an array of Vehicule objects
