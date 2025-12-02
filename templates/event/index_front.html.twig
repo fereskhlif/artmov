@@ -2,23 +2,46 @@
 
 {% block body %}
     <div class="container mt-4">
-        <h1 class="mb-4">Events List</h1>
+        <h1 class="mb-4 text-center">Events List</h1>
 
-        <!-- Create New Event Button (Optional, for Admin) -->
-        {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('app_event_new') }}" class="btn btn-success mb-3">
-                <i class="fas fa-plus-circle"></i> Create New Event
-            </a>
-        {% endif %}
+        <!-- Filter Section -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" action="{{ path('app_event_index_users') }}" class="row g-3">
+                    <!-- ... keep your filter form unchanged ... -->
+                </form>
+
+                {% if currentFilters is not empty %}
+                    <div class="mt-3">
+                        <a href="{{ path('app_event_index_users') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-times"></i> Clear filters
+                        </a>
+                        <a href="{{ path('app_event_popular') }}" class="btn btn-sm btn-outline-warning ms-2">
+                            <i class="fas fa-fire"></i> Popular Events
+                        </a>
+                        <small class="text-muted ms-2">
+                            {{ events.getTotalItemCount }} event(s) found
+                        </small>
+                    </div>
+                {% else %}
+                    <div class="mt-3">
+                        <a href="{{ path('app_event_popular') }}" class="btn btn-sm btn-outline-warning">
+                            <i class="fas fa-fire"></i> Popular Events
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
 
         <!-- Event Cards -->
         <div class="row">
-            {% for event in events %}
+            {% for result in events %}
+                {% set event = result[0] is defined ? result[0] : result %}
                 <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <!-- Event Image with Inline CSS for Resize -->
-                        <img src="{{ event.image ? asset('uploads/events/' ~ event.image) : asset('images/default-event.jpg') }}" 
-                             class="card-img-top" 
+                    <div class="card h-100 shadow-sm event-card">
+                        <!-- Event Image -->
+                        <img src="{{ event.image ? asset('uploads/events/' ~ event.image) : asset('images/default-event.jpg') }}"
+                             class="card-img-top"
                              alt="{{ event.titre }}"
                              style="width: 100%; height: 200px; object-fit: cover;">
 
@@ -29,25 +52,61 @@
                                 <br>
                                 <strong>Location:</strong> {{ event.lieu }}
                             </p>
+
+                            <!-- Ticket Count Badge -->
+                            {% if result.ticketCount is defined %}
+                                <span class="badge bg-warning">
+                                    <i class="fas fa-fire"></i> {{ result.ticketCount }} tickets sold
+                                </span>
+                            {% elseif event.tickets|length > 0 %}
+                                <span class="badge bg-info">
+                                    <i class="fas fa-ticket-alt"></i> {{ event.tickets|length }} tickets sold
+                                </span>
+                            {% endif %}
                         </div>
 
                         <div class="card-footer text-center">
                             <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn btn-info btn-sm">
-                                <i class="fas fa-eye"></i> Show
+                                <i class="fas fa-eye"></i> Details
                             </a>
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="btn btn-warning btn-sm mx-2">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
-                            {% endif %}
+                            <a href="{{ path('app_ticket_new', {'eventId': event.id}) }}" class="btn btn-success btn-sm mx-1">
+                                <i class="fas fa-ticket-alt"></i> Book Tickets
+                            </a>
                         </div>
                     </div>
                 </div>
             {% else %}
                 <div class="col-12 text-center">
-                    <p>No events found</p>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        {% if currentFilters is not empty %}
+                            No events found with the selected filters.
+                        {% else %}
+                            No events available at the moment.
+                        {% endif %}
+                    </div>
                 </div>
             {% endfor %}
         </div>
+
+        <!-- Pagination -->
+        {% if events.getTotalItemCount > 0 %}
+            <div class="d-flex justify-content-center mt-4">
+                {{ knp_pagination_render(events) }}
+            </div>
+        {% endif %}
     </div>
+
+    <style>
+        .event-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-img-top {
+            border-bottom: 3px solid #007bff;
+        }
+    </style>
 {% endblock %}

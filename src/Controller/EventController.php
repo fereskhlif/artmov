@@ -11,24 +11,128 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Knp\Component\Pager\PaginatorInterface;
 
 
 #[Route('/event')]
 final class EventController extends AbstractController
 {
     #[Route(name: 'app_event_index', methods: ['GET'])]
-    public function index(EventRepository $eventRepository): Response
+    public function index(
+        EventRepository $eventRepository,
+        Request $request,
+        PaginatorInterface $paginator
+    ): Response
     {
+        $search = $request->query->get('search');
+        $minPrice = $request->query->get('min_price');
+        $maxPrice = $request->query->get('max_price');
+        $sortBy = $request->query->get('sort_by');
+
+        $criteria = array_filter([
+            'search' => $search,
+            'min_price' => $minPrice,
+            'max_price' => $maxPrice,
+            'sort_by' => $sortBy,
+        ], function($value) {
+            return $value !== null && $value !== '';
+        });
+
+        if (!empty($criteria)) {
+            $query = $eventRepository->findEventsByCriteriaQuery($criteria);
+        } else {
+            $query = $eventRepository->findAllQuery();
+        }
+
+        $events = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            9
+        );
+
         return $this->render('event/index.html.twig', [
-            'events' => $eventRepository->findAll(),
+            'events' => $events,
+            'currentFilters' => $criteria
         ]);
     }
 
-    #[Route('/users',name: 'app_event_index_users', methods: ['GET'])]
-    public function indexfront(EventRepository $eventRepository): Response
+    #[Route('/users', name: 'app_event_index_users', methods: ['GET'])]
+    public function indexfront(
+        EventRepository $eventRepository,
+        Request $request,
+        PaginatorInterface $paginator
+    ): Response
     {
+        $search = $request->query->get('search');
+        $minPrice = $request->query->get('min_price');
+        $maxPrice = $request->query->get('max_price');
+        $sortBy = $request->query->get('sort_by');
+
+        $criteria = array_filter([
+            'search' => $search,
+            'min_price' => $minPrice,
+            'max_price' => $maxPrice,
+            'sort_by' => $sortBy,
+        ], function($value) {
+            return $value !== null && $value !== '';
+        });
+
+        if (!empty($criteria)) {
+            $query = $eventRepository->findEventsByCriteriaQuery($criteria);
+        } else {
+            $query = $eventRepository->findAllQuery();
+        }
+
+        $events = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            9
+        );
+
         return $this->render('event/index_front.html.twig', [
-            'events' => $eventRepository->findAll(),
+            'events' => $events,
+            'currentFilters' => $criteria
+        ]);
+    }
+
+    #[Route('/popular', name: 'app_event_popular', methods: ['GET'])]
+    public function popularEvents(
+        EventRepository $eventRepository,
+        Request $request,
+        PaginatorInterface $paginator
+    ): Response
+    {
+        $query = $eventRepository->findPopularEventsQuery();
+
+        $events = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            9
+        );
+
+        return $this->render('event/index_front.html.twig', [
+            'events' => $events,
+            'currentFilters' => ['popular' => true]
+        ]);
+    }
+
+    #[Route('/revenue', name: 'app_event_revenue', methods: ['GET'])]
+    public function eventsRevenue(
+        EventRepository $eventRepository,
+        Request $request,
+        PaginatorInterface $paginator
+    ): Response
+    {
+        $query = $eventRepository->findEventsWithRevenueQuery();
+
+        $events = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('event/revenue.html.twig', [
+            'events' => $events,
         ]);
     }
 
@@ -100,7 +204,7 @@ final class EventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Handle image file upload if it's set
             $imageFile = $form->get('image')->getData();
-            
+
             if ($imageFile) {
                 // Get the original filename and create a safe version
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);

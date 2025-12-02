@@ -12,22 +12,34 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 #[Route('/ticket')]
 final class TicketController extends AbstractController
 {
     #[Route('/{eventId}/tickets', name: 'app_event_tickets', methods: ['GET'])]
-    public function showEventTickets(int $eventId, TicketRepository $ticketRepository, EntityManagerInterface $entityManager): Response
+    public function showEventTickets(
+        int $eventId,
+        TicketRepository $ticketRepository,
+        EntityManagerInterface $entityManager,
+        Request $request,
+        PaginatorInterface $paginator
+    ): Response
     {
-        // Fetch event using EntityManagerInterface
         $event = $entityManager->getRepository(Event::class)->find($eventId);
 
         if (!$event) {
             throw $this->createNotFoundException('Event not found');
         }
 
-        // Fetch tickets associated with the event
-        $tickets = $ticketRepository->findBy(['event' => $event]);
+        $query = $ticketRepository->findByEventQuery($eventId);
+
+        $tickets = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10
+        );
 
         return $this->render('ticket/index.html.twig', [
             'event' => $event,
@@ -41,7 +53,7 @@ final class TicketController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, int $eventId): Response
     {
         $event = $entityManager->getRepository(Event::class)->find($eventId);
-        
+
         if (!$event) {
             throw $this->createNotFoundException('Event not found');
         }
