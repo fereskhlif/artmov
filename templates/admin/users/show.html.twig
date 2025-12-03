@@ -1,0 +1,286 @@
+{# templates/admin/users/show.html.twig #}
+{% extends 'Template.html.twig' %}
+
+{% block title %}Détails de {{ user.prenom }} {{ user.nom }} - Mon Application{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Accueil</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('admin_users_index') }}">Utilisateurs</a></li>
+    <li class="breadcrumb-item active">Détails de {{ user.prenom }} {{ user.nom }}</li>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Informations de base</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0">
+                                <div class="avatar-lg bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                    <span class="fs-4">{{ user.prenom|first|upper }}{{ user.nom|first|upper }}</span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h4 class="mb-0">{{ user.prenom }} {{ user.nom }}</h4>
+                                <p class="text-muted mb-0">{{ user.email }}</p>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <dl class="row">
+                            <dt class="col-sm-4">ID</dt>
+                            <dd class="col-sm-8">{{ user.id }}</dd>
+
+                            <dt class="col-sm-4">Statut du compte</dt>
+                            <dd class="col-sm-8">
+                                {% if user.isActive %}
+                                    <span class="badge bg-success">Actif</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactif</span>
+                                {% endif %}
+                            </dd>
+
+                            <dt class="col-sm-4">Email vérifié</dt>
+                            <dd class="col-sm-8">
+                                {% if user.isVerified %}
+                                    <span class="badge bg-success">Oui</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Non</span>
+                                {% endif %}
+                            </dd>
+
+                            <dt class="col-sm-4">Date de création</dt>
+                            <dd class="col-sm-8">{{ user.createdAt|date('d/m/Y à H:i') }}</dd>
+
+                            <dt class="col-sm-4">Rôles</dt>
+                            <dd class="col-sm-8">
+                                {% for role in user.roles %}
+                                    <span class="badge bg-secondary me-1">{{ role }}</span>
+                                {% endfor %}
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('admin_users_edit', {'id': user.id}) }}" class="btn btn-warning">
+                                <i class="bi bi-pencil"></i> Modifier
+                            </a>
+
+                            <form method="post" action="{{ path('admin_users_toggle_active', {'id': user.id}) }}" class="d-grid">
+                                <input type="hidden" name="_token" value="{{ csrf_token('toggle-active' ~ user.id) }}">
+                                <button type="submit" class="btn {{ user.isActive ? 'btn-warning' : 'btn-success' }}">
+                                    <i class="bi bi-power"></i> {{ user.isActive ? 'Désactiver' : 'Activer' }}
+                                </button>
+                            </form>
+
+                            <a href="{{ path('admin_users_index') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Retour à la liste
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                {% if user.biographie or user.styleArtistique %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Informations professionnelles</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if user.styleArtistique %}
+                                <div class="mb-3">
+                                    <h6>Style artistique</h6>
+                                    <p class="mb-0">{{ user.styleArtistique }}</p>
+                                </div>
+                            {% endif %}
+
+                            {% if user.biographie %}
+                                <div>
+                                    <h6>Biographie</h6>
+                                    <p class="mb-0">{{ user.biographie|nl2br }}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Statistiques</h5>
+                            <form method="post" action="{{ path('admin_users_delete', {'id': user.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="bi bi-trash"></i> Supprimer l'utilisateur
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-primary mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="card-title text-primary">Type de compte</h6>
+                                                <p class="card-text">
+                                                    {% if 'ROLE_ARTISTE' in user.roles %}
+                                                        Artiste
+                                                    {% elseif 'ROLE_ADMIN' in user.roles %}
+                                                        Administrateur
+                                                    {% else %}
+                                                        Client
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                            <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center">
+                                                {% if 'ROLE_ARTISTE' in user.roles %}
+                                                    <i class="bi bi-palette text-white"></i>
+                                                {% elseif 'ROLE_ADMIN' in user.roles %}
+                                                    <i class="bi bi-shield-check text-white"></i>
+                                                {% else %}
+                                                    <i class="bi bi-person text-white"></i>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card border-success mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="card-title text-success">Durée d'inscription</h6>
+                                                <p class="card-text">
+                                                    {% set difference = date().diff(user.createdAt) %}
+                                                    {% set years = difference.y %}
+                                                    {% set months = difference.m %}
+                                                    {% set days = difference.d %}
+
+                                                    {% if years > 0 %}
+                                                        {{ years }} an{% if years > 1 %}s{% endif %}
+                                                    {% elseif months > 0 %}
+                                                        {{ months }} mois
+                                                    {% else %}
+                                                        {{ days }} jour{% if days > 1 %}s{% endif %}
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                            <div class="avatar-sm bg-success rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-clock-history text-white"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-info-circle"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="alert-heading">Informations</h6>
+                                    <p class="mb-0">
+                                        Ce compte a été créé le {{ user.createdAt|date('d/m/Y') }}.
+                                        {% if not user.isVerified %}
+                                            <br><strong>Attention :</strong> L'adresse email n'a pas encore été vérifiée.
+                                        {% endif %}
+                                        {% if not user.isActive %}
+                                            <br><strong>Attention :</strong> Ce compte est actuellement désactivé.
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Confirmation pour la suppression
+            const deleteForm = document.querySelector('form[onsubmit*="confirm"]');
+            if (deleteForm) {
+                deleteForm.addEventListener('submit', function(e) {
+                    if (!confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.')) {
+                        e.preventDefault();
+                    }
+                });
+            }
+
+            // Confirmation pour la désactivation/activation
+            const toggleForm = document.querySelector('form[action*="toggle-active"]');
+            if (toggleForm) {
+                toggleForm.addEventListener('submit', function(e) {
+                    const isActive = {{ user.isActive ? 'true' : 'false' }};
+                    const message = isActive
+                        ? 'Êtes-vous sûr de vouloir désactiver ce compte ? L\'utilisateur ne pourra plus se connecter.'
+                        : 'Êtes-vous sûr de vouloir réactiver ce compte ? L\'utilisateur pourra à nouveau se connecter.';
+
+                    if (!confirm(message)) {
+                        e.preventDefault();
+                    }
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .avatar-lg {
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .avatar-sm {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+
+        .badge {
+            font-size: 0.85em;
+        }
+
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border: 1px solid rgba(0, 0, 0, 0.125);
+        }
+
+        .card-header {
+            background-color: rgba(0, 0, 0, 0.03);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+        }
+
+        dl dt {
+            font-weight: 600;
+        }
+
+        dl dd {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+{% endblock %}
