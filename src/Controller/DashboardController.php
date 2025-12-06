@@ -10,7 +10,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class DashboardController extends AbstractController
 {
-    #[Route('/dashboard', name: 'app_dashboard')]
+    #[Route('/dashboard1', name: 'app_dashboard1')]
     #[IsGranted('ROLE_ADMIN')]
     public function index(UserRepository $userRepository): Response
     {

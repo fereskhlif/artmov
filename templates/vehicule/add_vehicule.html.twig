@@ -1,35 +1,114 @@
-{% extends 'base.html.twig' %}
+{% extends 'Template.html.twig' %}
 
-{% block title %}Ajouter un Trajet{% endblock %}
+{% block title %}Ajouter un Véhicule{% endblock %}
+{% block page_title %}Ajouter un Véhicule{% endblock %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Home</a></li>
+    <li class="breadcrumb-item active">Ajouter Véhicule</li>
+{% endblock %}
 
-{% block body %}
-    <h1 class="text-center mb-4">Ajouter un trajet</h1>
+{% block content %}
+    <div class="card shadow" style="border-radius: 12px;">
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title mb-0">
+                <i class="bi bi-car-front-fill me-2"></i>
+                Formulaire d'ajout de véhicule
+            </h3>
+        </div>
 
-    <div class="container mt-4">
-        <div class="card shadow p-4" style="border-radius: 12px;">
-            <div class="card-body">
+        <div class="card-body">
 
-                {{ form_start(formVehicule, {'attr': {'class': 'row g-4'}}) }}
+            {{ form_start(formVehicule,{'attr': {'novalidate': 'novalidate'}} ) }}
 
-                {% for child in formVehicule %}
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            {{ form_label(child, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(child, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-                    </div>
-                {% endfor %}
+            {{ form_label(formVehicule.matricule, "Matricule") }}
+            {{ form_widget(formVehicule.matricule, {
+                attr: {
+                    class: 'form-control ' ~ (formVehicule.matricule.vars.valid ? 'is-valid' : 'is-invalid')
+                }
+            }) }}
+            {{ form_errors(formVehicule.matricule) }}<br><br>
 
-                <div class="col-12 text-end mt-3">
-                    <button class="btn btn-primary btn-lg px-4">
-                        Enregistrer
-                    </button>
-                </div>
+            {{ form_label(formVehicule.type, "Type de véhicule") }}
+            {{ form_widget(formVehicule.type, {
+                attr: {
+                    class: 'form-control ' ~ (formVehicule.type.vars.valid ? 'is-valid' : 'is-invalid')
+                }
+            }) }}
+            {{ form_errors(formVehicule.type) }}<br><br>
 
-                {{ form_end(formVehicule) }}
+            {{ form_label(formVehicule.capacite, "Capacité") }}
+            {{ form_widget(formVehicule.capacite, {
+                attr: { class: 'form-control ' ~ (formVehicule.capacite.vars.valid ? 'is-valid' : 'is-invalid') }
+            }) }}
+            {{ form_errors(formVehicule.capacite) }}<br><br>
 
-            </div>
+            {{ form_label(formVehicule.etat, "État") }}
+            {{ form_widget(formVehicule.etat, {
+                attr: { class: 'form-control ' ~ (formVehicule.etat.vars.valid ? 'is-valid' : 'is-invalid') }
+            }) }}
+            {{ form_errors(formVehicule.etat) }}<br><br>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save me-2"></i> Ajouter vehicule
+            </button>
+            {{ form_end(formVehicule) }}
         </div>
     </div>
-
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#    <div class="row">#}
+{#        <div class="col-md-10 offset-md-1">#}
+{#            <div class="card shadow" style="border-radius: 12px;">#}
+{#                <div class="card-header bg-primary text-white">#}
+{#                    <h3 class="card-title mb-0">#}
+{#                        <i class="bi bi-car-front-fill me-2"></i>#}
+{#                        Formulaire d'ajout de véhicule#}
+{#                    </h3>#}
+{#                </div>#}
+{#                <div class="card-body">#}
+{#                    {{ form_start(formVehicule, {'attr': {'class': 'row g-4'}}) }}#}
+{#                    {% for child in formVehicule.children %}#}
+{#                        <div class="col-md-6">#}
+{#                            <div class="form-group mb-3">#}
+{#                                {{ form_label(child, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}#}
+{#                                {{ form_widget(child, {'attr': {'class': 'form-control'}}) }}#}
+{#                                {{ form_errors(child) }}#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    {% endfor %}#}
+{#                    <div class="col-12 text-end mt-4">#}
+{#                        <a href="{{ path('liste_vehicule') }}" class="btn btn-secondary me-2">#}
+{#                            <i class="bi bi-x-circle me-2"></i> Annuler#}
+{#                        </a>#}
+{#                        <button type="submit" class="btn btn-primary">#}
+{#                            <i class="bi bi-save me-2"></i> Enregistrer#}
+{#                        </button>#}
+{#                    </div>#}
+{#                    {{ form_end(formVehicule) }}#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+

@@ -16,6 +16,31 @@ class TrajetRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Trajet::class);
     }
+    public function showAlltrajetByVehicule(int $id)
+
+    {
+        $qb=$this->createQueryBuilder('b')
+            ->join('b.vehicule', 'v')
+            ->where('v.id=:x')
+            ->setParameter('x', $id);
+        return $qb->getQuery()->getResult();
+    }
+    public function showAlltrajetOrderByVilleDep()
+    {
+        $qb=$this->createQueryBuilder('b')
+            ->orderBy('b.ville_dep','ASC');
+        return $qb->getQuery()->getResult();
+
+    }
+    public function searchVehiculeByDateDep(\DateTimeInterface $date): array
+    {
+        return $this->createQueryBuilder('t')
+            ->where('DATE(t.date_dep) = :date')
+            ->setParameter('date', $date->format('Y-m-d'))
+            ->getQuery()
+            ->getResult();
+    }
+
 
     //    /**
     //     * @return Transport[] Returns an array of Transport objects

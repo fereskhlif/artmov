@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Controller;
-use App\Form\TrajetType;
+use qyApp\Form\TrajetType;
 use App\Entity\Vehicule;
+use Doctrine\ORM\EntityManagerInterface;
 
 use App\Entity\Trajet;
 use App\Repository\TrajetRepository;
@@ -20,6 +21,7 @@ final class TrajetController extends AbstractController
     public function index(): Response
     {
         return $this->render('trajet/index.html.twig', [
+            'controller_name' => 'TrajetController',
         ]);
     }
 
@@ -39,11 +41,11 @@ final class TrajetController extends AbstractController
     #[Route('/listetrajet', name: 'liste_trajet')]
     public function listeTrajet(TrajetRepository $repository )
     {
-        $trajet=$repository->findAll();
+        $trajet=$repository->showAlltrajetOrderByVilleDep();
         return $this->render('trajet/liste.html.twig', ["trajet"=>$trajet]);
     }
     #[Route('/addtrajet', name: 'app_trajet_add')]
-public function addtrajet(Request $request,ManagerRegistry $doctrine)
+    public function addtrajet(Request $request,ManagerRegistry $doctrine)
     {
         $trajet=new Trajet();
         $for=$this->createForm(TrajetType::class,$trajet);
@@ -56,24 +58,31 @@ public function addtrajet(Request $request,ManagerRegistry $doctrine)
         }
         return $this->render('trajet/addtrajet.html.twig', ["trajet"=>$for->createView()]);
     }
-    #[Route('/trajet/new/{vehiculeId?}', name: 'app_trajet_new')]
-    public function new(Request $request, ManagerRegistry $doctrine, ?int $vehiculeId = null)
+    #[Route('/trajet/new', name: 'trajet_new')]
+    public function neww(Request $request, ManagerRegistry $doctrine, TrajetRepository $trajetRepository): Response
     {
         $trajet = new Trajet();
-
-        if ($vehiculeId) {
-            $vehicule = $doctrine->getRepository(Vehicule::class)->find($vehiculeId);
-            $trajet->setVehicule($vehicule);
-        }
-
         $form = $this->createForm(TrajetType::class, $trajet);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $trajets = $trajetRepository->createQueryBuilder('t')
+                ->where('t.nb_places > 0')
+                ->getQuery()
+                ->getResult();
+
+            $vehicule = $trajet->getVehicule();
+            if ($vehicule) {
+                $trajet->setNbPlaces($vehicule->getCapacite());
+            }
+
             $em = $doctrine->getManager();
             $em->persist($trajet);
             $em->flush();
-            return $this->redirectToRoute('liste_vehicule');
+
+            $this->addFlash('success', 'Trajet ajouté avec succès !');
+            return $this->redirectToRoute('liste_trajet');
         }
 
         return $this->render('trajet/new.html.twig', [
@@ -81,8 +90,9 @@ public function addtrajet(Request $request,ManagerRegistry $doctrine)
         ]);
     }
 
+
     #[Route('/deletetrajet/{id}', name: 'app_trajet_delete')]
-public function deletetrajet(TrajetRepository $repository,int $id,ManagerRegistry $doctrine)
+    public function deletetrajet(TrajetRepository $repository,int $id,ManagerRegistry $doctrine)
     {
         $trajet=$repository->find($id);
         $em=$doctrine->getManager();
@@ -92,7 +102,7 @@ public function deletetrajet(TrajetRepository $repository,int $id,ManagerRegistr
 
     }
     #[Route('/updatetrajet/{id}', name: 'app_trajet_update')]
-public function updatetrajet(TrajetRepository $repository,int $id,Request $request,ManagerRegistry $doctrine)
+    public function updatetrajet(TrajetRepository $repository,int $id,Request $request,ManagerRegistry $doctrine)
     {
         $trajet=$repository->find($id);
         $for=$this->createForm(TrajetType::class,$trajet);
@@ -105,4 +115,98 @@ public function updatetrajet(TrajetRepository $repository,int $id,Request $reque
         }
         return $this->render('trajet/updatetrajet.html.twig', ["trajet"=>$for->createView()]);
     }
+//    #[Route('/trajet/new', name: 'trajet_new')]
+//    public function new(Request $request, EntityManagerInterface $em): Response
+//    {
+//        $trajet = new Trajet();
+//
+//        $form = $this->createForm(TrajetType::class, $trajet);
+//        $form->handleRequest($request);
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//
+//            // Initialiser nb_places avec la capacité du véhicule choisi
+//            if ($trajet->getVehicule()) {
+//                $trajet->setNbPlaces($trajet->getVehicule()->getCapacite());
+//            }
+//
+//            $em->persist($trajet);
+//            $em->flush();
+//
+//            $this->addFlash('success', 'Trajet ajouté avec succès !');
+//
+//            return $this->redirectToRoute('liste_trajet');
+//        }
+//
+//        return $this->render('trajet/new.html.twig', [
+//            'form' => $form->createView(),
+//        ]);
+//    }
+
+    #[Route('/trajets', name: 'frontoffice_trajets')]
+    public function trajets(TrajetRepository $trajetRepository): Response
+    {
+        $trajets = $trajetRepository->findBy(['statut' => 'Disponible']); // seuls les trajets programmés
+        return $this->render('trajet/trajets.html.twig', [
+            'trajets' => $trajets
+        ]);
+    }
+
+
+    #[Route('/trajet/reserver/{id}', name: 'trajet_reserver')]
+    public function reserver(Trajet $trajet, ManagerRegistry $doctrine): Response
+    {
+
+        if ($trajet->getStatut() === 'Complet') {
+            $this->addFlash('error', 'Ce trajet est complet.');
+            return $this->redirectToRoute('frontoffice_trajets');
+        }
+
+        if ($trajet->getNbPlaces() > 0) {
+            // Décrémenter le nombre de places
+            $trajet->setNbPlaces($trajet->getNbPlaces() - 1);
+
+            // Mettre à jour le statut si nécessaire
+            if ($trajet->getNbPlaces() === 0) {
+                $trajet->setStatut('Complet');
+            }
+
+            $em = $doctrine->getManager();
+            $em->persist($trajet);
+            $em->flush();
+
+            $this->addFlash('success', 'Réservation effectuée avec succès ! Il reste ' . $trajet->getNbPlaces() . ' place(s).');
+        } else {
+            $this->addFlash('error', 'Aucune place disponible pour ce trajet.');
+        }
+
+        return $this->redirectToRoute('frontoffice_trajets');
+    }
+    #[Route('/trajett', name: 'app_trajet_list')]
+    public function list(Request $request, TrajetRepository $repo): Response
+    {
+        $dateStr = $request->query->get('date');
+        $trajet = [];
+
+        if ($dateStr) {
+            try {
+                $date = new \DateTime($dateStr);
+                $trajet = $repo->searchVehiculeByDateDep($date);
+            } catch (\Exception $e) {
+
+                $trajet = [];
+            }
+        } else {
+            $trajet = $repo->findAll();
+        }
+
+        return $this->render('trajet/liste.html.twig', [
+            'trajet' => $trajet,
+            'searchTerm' => $dateStr,
+
+
+        ]);
+    }
+
+
 }

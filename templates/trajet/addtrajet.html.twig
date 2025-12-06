@@ -1,6 +1,40 @@
-{% extends 'base.html.twig' %}
+{% extends 'Template.html.twig' %}
 {% block title %}Add Trajet{% endblock %}
-{% block body %}
-    <h1>Ajouter des trajets</h1>
-{{ form(trajet) }}
+{% block content %}
+    <div class="container">
+<div class="card shadow px-lg-1" style="border-radius: 12px;">
+    <div class="card-header bg-primary text-white">
+        <h3 class="card-title mb-0">
+            <i class="bi bi-car-front-fill me-2"></i>
+            Formulaire d'ajout de trajet
+        </h3>
+    </div>
+
+    {{ form_start(trajet,{'attr': {'novalidate': 'novalidate'}} ) }}
+    {{ form_label(trajet.date_dep,"Date de départ") }}
+    {{ form_widget(trajet.date_dep ) }}<br>
+    {{ form_errors(trajet.date_dep) }}<br>
+
+    {{ form_label(trajet.date_arr,"Date d'arrivée") }}
+    {{ form_widget(trajet.date_arr) }}<br>
+    {{ form_errors(trajet.date_arr) }}<br>
+
+    {{ form_label(trajet.ville_dep,"Ville de départ") }}
+    {{ form_widget(trajet.ville_dep) }}<br>
+    {{ form_errors(trajet.ville_dep) }}<br>
+
+    {{ form_label(trajet.ville_arr,"Ville d'arrivée") }}
+    {{ form_widget(trajet.ville_arr) }}<br>
+    {{ form_errors(trajet.ville_arr) }}<br>
+
+    {{ form_label(trajet.vehicule,"Véhicule") }}
+    {{ form_widget(trajet.vehicule) }}<br>
+    {{ form_errors(trajet.vehicule) }}<br>
+
+    {{ form_end(trajet) }}
+</div>
+    </div>
+    </div>
+
+{# {{ form(trajet) }}#}
 {% endblock %}

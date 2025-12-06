@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\TrajetRepository;
 
 final class VehiculeController extends AbstractController
 {
@@ -24,20 +25,20 @@ final class VehiculeController extends AbstractController
     #[Route('/liste_vehicule', name: 'liste_vehicule')]
     public function listeVehicule(VehiculeRepository $vehiculeRepository)
     {
-        $vehicule = $vehiculeRepository->findAll();
+        $vehicule = $vehiculeRepository->showAllVehiculeByCapacity();
         return $this->render('vehicule/liste_vehicule.html.twig', ["vehicule" => $vehicule]);
     }
-
-
-
+    #[Route('/dashboard', name: 'app_dashboard')]
+    public function dashboard(): Response
+    {
+        return $this->render('backend/index2.html.twig');
+    }
     #[Route('/addvehicule', name: 'app_vehicule_add')]
     public function addVehicule(Request $request, ManagerRegistry $doctrine)
     {
         $vehicule = new Vehicule();
         $for = $this->createForm(VehiculeType::class, $vehicule);
-
         $for->handleRequest($request);
-
         if ($for->isSubmitted() && $for->isValid()) {
             $em = $doctrine->getManager();
             $em->persist($vehicule);
@@ -45,14 +46,12 @@ final class VehiculeController extends AbstractController
 
             return $this->redirectToRoute('liste_vehicule');
         }
-
         return $this->render('vehicule/add_vehicule.html.twig', [
             'formVehicule' => $for->createView(),
             'vehicule' => $vehicule,
         ]);
 
     }
-
     #[Route('/updatevehicule/{id}', name: 'app_vehicule_update')]
     public function updateVehicule(Request $request, ManagerRegistry $doctrine, $id)
     {
@@ -79,19 +78,35 @@ final class VehiculeController extends AbstractController
             throw $this->createNotFoundException('Vehicule non trouvé.');
         }
 
-        // Vérification si le véhicule est lié à des trajets
-        if (count($vehicule->getTrajets()) > 0)
-
-        {
-            $this->addFlash('error', 'Impossible de supprimer ce véhicule : il est lié à un ou plusieurs trajets.');
-            return $this->redirectToRoute('liste_vehicule');
-        }
-
         $em = $doctrine->getManager();
         $em->remove($vehicule);
         $em->flush();
 
         return $this->redirectToRoute('liste_vehicule');
     }
+    #[Route('showBooksByAuthors/{id}', name: 'app_show_books_by_authors')]
+    public function listetrajetsbyvehicule(TrajetRepository $repo ,$id)
+    {
+        $trajets = $repo->showAlltrajetByVehicule($id);
+        return $this->render('vehicule/listetrajetsbyvehicule.html.twig', ["tab" => $trajets]);
+
+    }
+    #[Route('/vehicules', name: 'app_vehicule_list')]
+    public function list(Request $request, VehiculeRepository $repo): Response
+    {
+        $matricule = $request->query->get('matricule');
+
+        if ($matricule) {
+            $vehicules = $repo->findByMatricule($matricule);
+        } else {
+            $vehicules = $repo->findAll();
+        }
+
+        return $this->render('vehicule/liste_vehicule.html.twig', [
+            'vehicule' => $vehicules,
+            'searchTerm' => $matricule,
+        ]);
+    }
+
 
 }
